@@ -69,21 +69,21 @@ const highlights = [
 const sleepingArrangements = [
   {
     title: 'Bedroom 1',
-    image: '/images/a9cd469addbc400d93a1b4e4863ac189-Large.jpg',
-    alt: 'Primary bedroom with king bed',
+    image: '/images/first-bedroom.jpg',
+    alt: 'First bedroom with king bed',
     bedCount: 1,
     details: ['1 king bed', 'Primary suite', 'Private TV', 'Large closet'],
   },
   {
     title: 'Bedroom 2',
-    image: '/images/ea79c684954f42579756dcf8bdaecbd9.jpg',
+    image: '/images/second-bedroom.jpg',
     alt: 'Second bedroom with multiple beds',
     bedCount: 4,
     details: ['2 twin beds', '1 double bed', '1 queen bed', 'Great for kids or groups'],
   },
   {
     title: 'Bedroom 3',
-    image: '/images/a7e0c45cbf5b405c872432c2431ac27c.jpg',
+    image: '/images/third-bedroom.jpg',
     alt: 'Third bedroom with double and queen bed',
     bedCount: 2,
     details: ['1 double bed', '1 queen bed', 'Standalone bunkie house'],
@@ -92,36 +92,136 @@ const sleepingArrangements = [
 
 const gallery = [
   {
-    src: '/images/781563ca1e494e84be126f622aba6859-Large.jpg',
-    alt: 'Wooded exterior view of the retreat',
+    src: '/images/outside-house.jpg',
+    alt: 'Exterior view of the retreat surrounded by trees',
   },
   {
-    src: '/images/59e00ff40bdc4694b4f4825fb7d8e730-Large.jpg',
-    alt: 'Living room with plaid accents and cozy seating',
+    src: '/images/living-room.jpg',
+    alt: 'Living room with cozy seating',
   },
   {
-    src: '/images/f78ac072797546e4a8a505414922439f-Large.jpg',
-    alt: 'Kitchen with warm wood finishes',
+    src: '/images/living-room-2.jpg',
+    alt: 'Living room seating area',
   },
   {
-    src: '/images/a9cd469addbc400d93a1b4e4863ac189-Large.jpg',
-    alt: 'Main bedroom with soft bedding',
+    src: '/images/living-room-zoom-out.jpg',
+    alt: 'Wide view of the living room',
   },
   {
-    src: '/images/e74c373decb643a78f64510fdf87e50a-Large.jpg',
-    alt: 'Spa bathroom with soaking tub',
+    src: '/images/living-area-zoom-out.jpg',
+    alt: 'Open living area view',
   },
   {
-    src: '/images/fa42bb7cfd654f3e952536b9968e096d-Large.jpg',
-    alt: 'Rec room with games and seating',
+    src: '/images/great-room.jpg',
+    alt: 'Great room with wood finishes',
   },
   {
-    src: '/images/9203a11b00be40dfbecafd3d5c97055d-Large.jpg',
-    alt: 'Outdoor fire pit area',
+    src: '/images/kitchen.jpg',
+    alt: 'Kitchen overview',
   },
   {
-    src: '/images/efaa27226f0348d8b49da438f809e10d-Large.jpg',
-    alt: 'Wooded balcony with swing chairs',
+    src: '/images/kitchen-zoom-out.jpg',
+    alt: 'Kitchen wide angle',
+  },
+  {
+    src: '/images/kitchen-sink.webp',
+    alt: 'Kitchen sink and finishes',
+  },
+  {
+    src: '/images/dining-table.jpg',
+    alt: 'Dining table setting',
+  },
+  {
+    src: '/images/first-bedroom.jpg',
+    alt: 'First bedroom with king bed',
+  },
+  {
+    src: '/images/first-bedroom-2.jpg',
+    alt: 'First bedroom alternate angle',
+  },
+  {
+    src: '/images/second-bedroom.jpg',
+    alt: 'Second bedroom with multiple beds',
+  },
+  {
+    src: '/images/second-bedroom-2.jpg',
+    alt: 'Second bedroom alternate angle',
+  },
+  {
+    src: '/images/second-bedroom-3.jpg',
+    alt: 'Second bedroom detail',
+  },
+  {
+    src: '/images/third-bedroom.jpg',
+    alt: 'Third bedroom with double and queen bed',
+  },
+  {
+    src: '/images/bathroom.jpg',
+    alt: 'Bathroom with vanity and mirror',
+  },
+  {
+    src: '/images/shower.jpg',
+    alt: 'Walk-in shower',
+  },
+  {
+    src: '/images/indoor-spa.jpg',
+    alt: 'Indoor spa and exercise pool',
+  },
+  {
+    src: '/images/jacuzzi.jpg',
+    alt: 'Jacuzzi soaking area',
+  },
+  {
+    src: '/images/jacuzzi-2.jpg',
+    alt: 'Jacuzzi and lounge detail',
+  },
+  {
+    src: '/images/play-area.jpg',
+    alt: 'Indoor play area',
+  },
+  {
+    src: '/images/play-area-2.jpg',
+    alt: 'Play area with activities',
+  },
+  {
+    src: '/images/play-area-3.jpg',
+    alt: 'Play area equipment',
+  },
+  {
+    src: '/images/play-area-4.jpg',
+    alt: 'Play area seating',
+  },
+  {
+    src: '/images/outdoor-deck.jpg',
+    alt: 'Outdoor deck and patio',
+  },
+  {
+    src: '/images/covered-porch.jpg',
+    alt: 'Covered porch seating',
+  },
+  {
+    src: '/images/covered-porch-2.jpg',
+    alt: 'Covered porch view',
+  },
+  {
+    src: '/images/ev-charging.webp',
+    alt: 'EV charging station',
+  },
+  {
+    src: '/images/ev-charging-2.webp',
+    alt: 'EV charging setup',
+  },
+  {
+    src: '/images/laundry.jpg',
+    alt: 'Laundry area',
+  },
+  {
+    src: '/images/second-bathroom.jpg',
+    alt: 'Second bathroom',
+  },
+  {
+    src: '/images/third-bedroom-2.jpg',
+    alt: 'Third bedroom alternate angle',
   },
 ];
 
@@ -644,7 +744,7 @@ function HomePage() {
                   loop
                   playsInline
                   preload="metadata"
-                  poster="/images/fa42bb7cfd654f3e952536b9968e096d-Large.jpg"
+                  poster="/images/living-room.jpg"
                 >
                   <source src="/living-room.mp4" type="video/mp4" />
                 </video>
@@ -653,14 +753,14 @@ function HomePage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="overflow-hidden rounded-3xl border border-sand-200/80 bg-sand-100/80 shadow-lg">
                 <img
-                  src="/images/59e00ff40bdc4694b4f4825fb7d8e730-Large.jpg"
-                  alt="Cozy living room"
+                  src="/images/kitchen.jpg"
+                  alt="Kitchen overview"
                   className="h-40 w-full object-cover"
                 />
               </div>
               <div className="overflow-hidden rounded-3xl border border-sand-200/80 bg-sand-100/80 shadow-lg">
                 <img
-                  src="/images/781563ca1e494e84be126f622aba6859-Large.jpg"
+                  src="/images/outside-house.jpg"
                   alt="Wooded exterior"
                   className="h-40 w-full object-cover"
                 />
