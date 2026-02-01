@@ -32,6 +32,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
+type MediaImage = {
+  src: string;
+  alt: string;
+};
+
 const navItems = [
   { label: 'Home', href: '/' },
   { label: 'Location', href: '/location' },
@@ -69,22 +74,30 @@ const highlights = [
 const sleepingArrangements = [
   {
     title: 'Bedroom 1',
-    image: '/images/first-bedroom.jpg',
-    alt: 'First bedroom with king bed',
+    images: [
+      { src: '/images/first-bedroom.jpg', alt: 'First bedroom with king bed' },
+      { src: '/images/first-bedroom-2.jpg', alt: 'First bedroom alternate angle' },
+    ],
     bedCount: 1,
     details: ['1 king bed', 'Primary suite', 'Private TV', 'Large closet'],
   },
   {
     title: 'Bedroom 2',
-    image: '/images/second-bedroom.jpg',
-    alt: 'Second bedroom with multiple beds',
+    images: [
+      { src: '/images/second-bedroom.jpg', alt: 'Second bedroom with multiple beds' },
+      { src: '/images/second-bedroom-2.jpg', alt: 'Second bedroom alternate angle' },
+      { src: '/images/second-bedroom-3.jpg', alt: 'Second bedroom detail' },
+    ],
     bedCount: 4,
     details: ['2 twin beds', '1 double bed', '1 queen bed', 'Great for kids or groups'],
   },
   {
     title: 'Bedroom 3',
-    image: '/images/third-bedroom.jpg',
-    alt: 'Third bedroom with double and queen bed',
+    images: [
+      { src: '/images/third-bedroom.jpg', alt: 'Third bedroom with double and queen bed' },
+      { src: '/images/third-bedroom-2.jpg', alt: 'Third bedroom alternate angle' },
+      { src: '/images/bunkie.jpg', alt: 'Bunkie house bedroom' },
+    ],
     bedCount: 2,
     details: ['1 double bed', '1 queen bed', 'Standalone bunkie house'],
   },
@@ -156,6 +169,10 @@ const gallery = [
     alt: 'Third bedroom with double and queen bed',
   },
   {
+    src: '/images/bunkie.jpg',
+    alt: 'Bunkie house bedroom',
+  },
+  {
     src: '/images/bathroom.jpg',
     alt: 'Bathroom with vanity and mirror',
   },
@@ -190,6 +207,10 @@ const gallery = [
   {
     src: '/images/play-area-4.jpg',
     alt: 'Play area seating',
+  },
+  {
+    src: '/images/play-area-5.jpg',
+    alt: 'Play area with games',
   },
   {
     src: '/images/outdoor-deck.jpg',
@@ -250,6 +271,10 @@ const bathrooms = [
   {
     title: 'Downstairs bathroom',
     icon: IconBath,
+    images: [
+      { src: '/images/bathroom.jpg', alt: 'Downstairs bathroom' },
+      { src: '/images/shower.jpg', alt: 'Downstairs shower' },
+    ],
     features: [
       { label: 'Toilet', icon: IconToilet },
       { label: 'Shower only', icon: IconShower },
@@ -258,10 +283,75 @@ const bathrooms = [
   {
     title: 'Upstairs bathroom',
     icon: IconBath,
+    images: [
+      { src: '/images/second-bathroom.jpg', alt: 'Upstairs bathroom' },
+    ],
     features: [
       { label: 'Bathtub', icon: IconBathtub },
       { label: 'Toilet', icon: IconToilet },
       { label: 'Shower only', icon: IconShower },
+    ],
+  },
+];
+
+const spaceShowcase = [
+  {
+    title: 'Great room + living area',
+    description: 'Wood-lined comfort with plenty of seating for families and friends.',
+    images: [
+      { src: '/images/living-room.jpg', alt: 'Living room with cozy seating' },
+      { src: '/images/living-room-2.jpg', alt: 'Living room seating area' },
+      { src: '/images/living-room-zoom-out.jpg', alt: 'Living room wide angle' },
+      { src: '/images/living-area-zoom-out.jpg', alt: 'Open living area' },
+      { src: '/images/great-room.jpg', alt: 'Great room overview' },
+    ],
+  },
+  {
+    title: 'Kitchen + dining',
+    description: 'Fully stocked kitchen with space for shared meals.',
+    images: [
+      { src: '/images/kitchen.jpg', alt: 'Kitchen overview' },
+      { src: '/images/kitchen-zoom-out.jpg', alt: 'Kitchen wide angle' },
+      { src: '/images/kitchen-sink.webp', alt: 'Kitchen sink and finishes' },
+      { src: '/images/dining-table.jpg', alt: 'Dining table' },
+    ],
+  },
+  {
+    title: 'Indoor spa + jacuzzi',
+    description: 'Warm soaks and year-round wellness in the indoor spa.',
+    images: [
+      { src: '/images/indoor-spa.jpg', alt: 'Indoor spa and exercise pool' },
+      { src: '/images/jacuzzi.jpg', alt: 'Jacuzzi area' },
+      { src: '/images/jacuzzi-2.jpg', alt: 'Jacuzzi detail' },
+    ],
+  },
+  {
+    title: 'Play area + rec zone',
+    description: 'Arcade, climbing, and fun for all ages.',
+    images: [
+      { src: '/images/play-area.jpg', alt: 'Indoor play area' },
+      { src: '/images/play-area-2.jpg', alt: 'Play area activities' },
+      { src: '/images/play-area-3.jpg', alt: 'Play area equipment' },
+      { src: '/images/play-area-4.jpg', alt: 'Play area seating' },
+      { src: '/images/play-area-5.jpg', alt: 'Play area with games' },
+    ],
+  },
+  {
+    title: 'Outdoor deck + covered porch',
+    description: 'Fresh air lounging with forest views.',
+    images: [
+      { src: '/images/outdoor-deck.jpg', alt: 'Outdoor deck and patio' },
+      { src: '/images/covered-porch.jpg', alt: 'Covered porch seating' },
+      { src: '/images/covered-porch-2.jpg', alt: 'Covered porch view' },
+    ],
+  },
+  {
+    title: 'EV charging + laundry',
+    description: 'Charge up and refresh with on-site laundry.',
+    images: [
+      { src: '/images/ev-charging.webp', alt: 'EV charging station' },
+      { src: '/images/ev-charging-2.webp', alt: 'EV charging setup' },
+      { src: '/images/laundry.jpg', alt: 'Laundry area' },
     ],
   },
 ];
@@ -363,7 +453,7 @@ const reviewSummary = {
   highlight: '10/10',
 };
 
-const originQuery = 'Birch & Bark Retreat, Petoskey, MI';
+const originQuery = '1725 Abbey Rd Petoskey MI 49770';
 
 const buildDirectionsUrl = (destination: string) => {
   const params = new URLSearchParams({
@@ -598,7 +688,7 @@ function GalleryGrid({
   images,
   columns = 'lg:grid-cols-4',
 }: {
-  images: typeof gallery;
+  images: MediaImage[];
   columns?: string;
 }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -760,8 +850,8 @@ function HomePage() {
               </div>
               <div className="overflow-hidden rounded-3xl border border-sand-200/80 bg-sand-100/80 shadow-lg">
                 <img
-                  src="/images/outside-house.jpg"
-                  alt="Wooded exterior"
+                  src="/images/play-area-5.jpg"
+                  alt="Play area with games"
                   className="h-40 w-full object-cover"
                 />
               </div>
