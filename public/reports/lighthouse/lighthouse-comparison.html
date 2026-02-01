@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lighthouse comparison: New vs Old site</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; max-width: 900px; margin: 0 auto; padding: 1.5rem; color: #1a1a1a; }
+    h1 { margin-top: 0; }
+    .meta { color: #555; margin-bottom: 1.5rem; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
+    th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid #eee; }
+    th { font-weight: 600; }
+    .winner-new { color: #0a0; font-weight: 600; }
+    .winner-old { color: #c00; }
+    .links { margin-top: 2rem; }
+    .links a { display: inline-block; margin-right: 1rem; color: #06c; }
+  </style>
+</head>
+<body>
+  <h1>Lighthouse comparison</h1>
+  <p class="meta">New site vs previous site. Higher scores and lower metrics (e.g. LCP) are better.</p>
+
+  <h2>Category scores (0–100)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>New site (atlashighperformancehomes.com)</th>
+        <th>Old site (atlashighperformancehomesnh.com)</th>
+        <th>Winner</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Performance</td><td>93</td><td>55</td><td class="winner-new">New</td></tr>
+<tr><td>Accessibility</td><td>98</td><td>72</td><td class="winner-new">New</td></tr>
+<tr><td>Best Practices</td><td>100</td><td>96</td><td class="winner-new">New</td></tr>
+<tr><td>SEO</td><td>69</td><td>77</td><td class="winner-old">Old</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Key performance metrics</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>New site (atlashighperformancehomes.com)</th>
+        <th>Old site (atlashighperformancehomesnh.com)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>First Contentful Paint</td><td>2.1 s</td><td>4.0 s</td></tr>
+<tr><td>Largest Contentful Paint</td><td>2.3 s</td><td>5.8 s</td></tr>
+<tr><td>Total Blocking Time</td><td>220 ms</td><td>60 ms</td></tr>
+<tr><td>Cumulative Layout Shift</td><td>0</td><td>0.281</td></tr>
+<tr><td>Speed Index</td><td>2.1 s</td><td>4.0 s</td></tr>
+    </tbody>
+  </table>
+
+  <div class="links">
+    <p><strong>Full reports:</strong></p>
+    <a href="lighthouse-new.report.html">Lighthouse report — New site</a>
+    <a href="lighthouse-old.report.html">Lighthouse report — Old site</a>
+  </div>
+</body>
+</html>
