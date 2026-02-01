@@ -606,11 +606,17 @@ function HomePage() {
                 Indoor spa + rec room
               </div>
               <div className="overflow-hidden rounded-[28px] shadow-lift ring-1 ring-pine-900/10">
-                <img
-                  src="/images/fa42bb7cfd654f3e952536b9968e096d-Large.jpg"
-                  alt="Interior rec room with cozy seating"
+                <video
                   className="h-full w-full object-cover"
-                />
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  poster="/images/fa42bb7cfd654f3e952536b9968e096d-Large.jpg"
+                >
+                  <source src="/living-room.mp4" type="video/mp4" />
+                </video>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
