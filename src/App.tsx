@@ -230,9 +230,8 @@ const reviews = [
 ];
 
 const reviewSummary = {
-  rating: 5.0,
   count: 27,
-  highlight: '10/10 loved by guests',
+  highlight: '10/10',
 };
 
 const originQuery = 'Birch & Bark Retreat, Petoskey, MI';
@@ -655,10 +654,10 @@ function HomePage() {
             <CardContent className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-between">
               <div className="space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-[0.4em] text-pine-500">
-                  Guest love
+                  Guests love it
                 </p>
                 <div className="flex flex-wrap items-center gap-3 text-pine-800">
-                  <span className="text-2xl font-semibold">{reviewSummary.rating.toFixed(1)}</span>
+                  <span className="text-2xl">⭐️⭐️⭐️⭐️⭐️</span>
                   <span className="text-sm uppercase tracking-[0.3em] text-ember-600">
                     {reviewSummary.highlight}
                   </span>
