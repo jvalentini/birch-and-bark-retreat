@@ -204,3 +204,71 @@ export function IconBath(props: IconProps) {
     </BaseIcon>
   );
 }
+
+export function IconBed(props: IconProps) {
+  return (
+    <BaseIcon {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 12h16" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6 12V9a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 17v-5" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M18 17v-5" />
+    </BaseIcon>
+  );
+}
+
+export function IconMapPin(props: IconProps) {
+  return (
+    <BaseIcon {...props}>
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 21s6-5 6-10a6 6 0 1 0-12 0c0 5 6 10 6 10z"
+      />
+      <circle cx="12" cy="11" r="2" />
+    </BaseIcon>
+  );
+}
+
+export function IconToilet(props: IconProps) {
+  return (
+    <BaseIcon {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7 6h6v4a3 3 0 0 0 3 3h1" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6 13h10a0 0 0 0 1 0 0v2a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3v-2a0 0 0 0 1 0 0z"
+      />
+      <circle cx="9" cy="8" r="1" />
+    </BaseIcon>
+  );
+}
+
+export function IconShower(props: IconProps) {
+  return (
+    <BaseIcon {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7 6h6a4 4 0 0 1 4 4v1" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 11v6" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 16v1" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 16v1" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 16v1" />
+    </BaseIcon>
+  );
+}
+
+export function IconBathtub(props: IconProps) {
+  return (
+    <BaseIcon {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 12h16" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6 12v3a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3v-3"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7 9h5a2 2 0 0 1 2 2v1" />
+    </BaseIcon>
+  );
+}

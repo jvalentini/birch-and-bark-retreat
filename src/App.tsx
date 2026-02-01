@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   IconBalcony,
   IconBath,
+  IconBathtub,
+  IconBed,
   IconDeck,
   IconDining,
   IconDryer,
@@ -10,9 +12,12 @@ import {
   IconGarden,
   IconHotTub,
   IconKitchen,
+  IconMapPin,
   IconPet,
   IconPlay,
   IconPool,
+  IconShower,
+  IconToilet,
   IconWasher,
   IconWifi,
 } from '@/components/icons';
@@ -64,14 +69,23 @@ const highlights = [
 const sleepingArrangements = [
   {
     title: 'Bedroom 1',
+    image: '/images/a9cd469addbc400d93a1b4e4863ac189-Large.jpg',
+    alt: 'Primary bedroom with king bed',
+    bedCount: 1,
     details: ['1 king bed', 'Primary suite', 'Private TV', 'Large closet'],
   },
   {
     title: 'Bedroom 2',
+    image: '/images/ea79c684954f42579756dcf8bdaecbd9.jpg',
+    alt: 'Second bedroom with multiple beds',
+    bedCount: 4,
     details: ['2 twin beds', '1 double bed', '1 queen bed', 'Great for kids or groups'],
   },
   {
     title: 'Bedroom 3',
+    image: '/images/a7e0c45cbf5b405c872432c2431ac27c.jpg',
+    alt: 'Third bedroom with double and queen bed',
+    bedCount: 2,
     details: ['1 double bed', '1 queen bed', 'Standalone bunkie house'],
   },
 ];
@@ -133,8 +147,23 @@ const spaceHighlights = [
 ];
 
 const bathrooms = [
-  { title: 'Bathroom 1', details: ['Toilet', 'Shower only'], icon: IconBath },
-  { title: 'Bathroom 2', details: ['Toilet', 'Bathtub', 'Shower only'], icon: IconBath },
+  {
+    title: 'Downstairs bathroom',
+    icon: IconBath,
+    features: [
+      { label: 'Toilet', icon: IconToilet },
+      { label: 'Shower only', icon: IconShower },
+    ],
+  },
+  {
+    title: 'Upstairs bathroom',
+    icon: IconBath,
+    features: [
+      { label: 'Bathtub', icon: IconBathtub },
+      { label: 'Toilet', icon: IconToilet },
+      { label: 'Shower only', icon: IconShower },
+    ],
+  },
 ];
 
 const policies = [
@@ -446,9 +475,12 @@ function DirectionsList({
             href={href}
             target="_blank"
             rel="noreferrer"
-            className="group flex items-center justify-between rounded-2xl border border-sand-200/70 bg-sand-100/80 px-4 py-3 text-sm text-pine-700 transition hover:border-ember-500/40 hover:bg-sand-50"
+            className="group flex items-center justify-between rounded-2xl border border-sand-200/70 bg-sand-100/80 px-4 py-2 text-sm text-pine-700 transition hover:border-ember-500/40 hover:bg-sand-50"
           >
-            <span className="font-semibold text-pine-800 group-hover:text-pine-900">
+            <span className="flex items-center gap-3 font-semibold text-pine-800 group-hover:text-pine-900">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sand-50 text-ember-600">
+                <IconMapPin className="h-4 w-4" aria-hidden="true" />
+              </span>
               {item.label}
             </span>
             <span className="flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-pine-500">
@@ -747,8 +779,25 @@ function HomePage() {
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
             {sleepingArrangements.map((room) => (
               <Card key={room.title}>
-                <CardHeader>
-                  <CardTitle>{room.title}</CardTitle>
+                <div className="overflow-hidden rounded-3xl border-b border-sand-200/70">
+                  <img
+                    src={room.image}
+                    alt={room.alt}
+                    className="h-40 w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <CardHeader className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle>{room.title}</CardTitle>
+                    <div className="flex items-center gap-1 text-ember-600">
+                      {Array.from({ length: room.bedCount }, (_, index) => index + 1).map(
+                        (value) => (
+                          <IconBed key={value} className="h-4 w-4" aria-hidden="true" />
+                        )
+                      )}
+                    </div>
+                  </div>
                   <CardDescription>
                     {room.details.map((detail) => (
                       <span key={detail} className="block">
@@ -770,10 +819,11 @@ function HomePage() {
                     </span>
                     <CardTitle>{bath.title}</CardTitle>
                   </div>
-                  <CardDescription>
-                    {bath.details.map((detail) => (
-                      <span key={detail} className="block">
-                        {detail}
+                  <CardDescription className="space-y-2">
+                    {bath.features.map((feature) => (
+                      <span key={feature.label} className="flex items-center gap-2">
+                        <feature.icon className="h-4 w-4 text-ember-600" aria-hidden="true" />
+                        {feature.label}
                       </span>
                     ))}
                   </CardDescription>
