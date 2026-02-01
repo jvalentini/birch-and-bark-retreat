@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   IconBalcony,
   IconBath,
@@ -47,7 +47,6 @@ const shuffleImages = <T,>(items: T[]) => {
 };
 
 const navItems = [
-  { label: 'Home', href: '/' },
   { label: 'Location', href: '/location' },
   { label: 'Photos', href: '/photos' },
   { label: 'Availability', href: '/availability' },
@@ -112,7 +111,7 @@ const sleepingArrangements = [
   },
 ];
 
-const gallery = [
+const galleryBase = [
   {
     src: '/images/outside-house.jpg',
     alt: 'Exterior view of the retreat surrounded by trees',
@@ -255,6 +254,20 @@ const gallery = [
   },
 ];
 
+const galleryRepeatImages = new Set([
+  '/images/outdoor-deck.jpg',
+  '/images/covered-porch.jpg',
+  '/images/kitchen.jpg',
+  '/images/dining-table.jpg',
+  '/images/play-area.jpg',
+  '/images/outside-house.jpg',
+]);
+
+const gallery = [
+  ...galleryBase.filter((image) => !galleryRepeatImages.has(image.src)),
+  ...galleryBase.filter((image) => galleryRepeatImages.has(image.src)),
+];
+
 const popularAmenities = [
   { title: 'Indoor pool', icon: IconPool },
   { title: 'Hot tub', icon: IconHotTub },
@@ -268,12 +281,36 @@ const popularAmenities = [
 ];
 
 const spaceHighlights = [
-  { title: 'Deck / patio', icon: IconDeck },
-  { title: 'Balcony', icon: IconBalcony },
-  { title: 'Kitchen', icon: IconKitchen },
-  { title: 'Dining area', icon: IconDining },
-  { title: 'Outdoor play area', icon: IconPlay },
-  { title: 'Garden', icon: IconGarden },
+  {
+    title: 'Deck / patio',
+    icon: IconDeck,
+    image: { src: '/images/outdoor-deck.jpg', alt: 'Outdoor deck and patio' },
+  },
+  {
+    title: 'Balcony + covered porch',
+    icon: IconBalcony,
+    image: { src: '/images/covered-porch.jpg', alt: 'Covered porch seating' },
+  },
+  {
+    title: 'Kitchen',
+    icon: IconKitchen,
+    image: { src: '/images/kitchen.jpg', alt: 'Kitchen overview' },
+  },
+  {
+    title: 'Dining area',
+    icon: IconDining,
+    image: { src: '/images/dining-table.jpg', alt: 'Dining table setting' },
+  },
+  {
+    title: 'Outdoor play area',
+    icon: IconPlay,
+    image: { src: '/images/play-area.jpg', alt: 'Indoor play area' },
+  },
+  {
+    title: 'Garden',
+    icon: IconGarden,
+    image: { src: '/images/outside-house.jpg', alt: 'Wooded surroundings' },
+  },
 ];
 
 const bathrooms = [
@@ -296,10 +333,50 @@ const bathrooms = [
       { src: '/images/second-bathroom.jpg', alt: 'Upstairs bathroom' },
     ],
     features: [
-      { label: 'Bathtub', icon: IconBathtub },
+      { label: 'Soaking tub', icon: IconBathtub },
       { label: 'Toilet', icon: IconToilet },
-      { label: 'Shower only', icon: IconShower },
+      { label: 'Double rainfall shower', icon: IconShower },
     ],
+  },
+];
+
+const bathHighlights = [
+  {
+    title: 'Spa-grade main bath',
+    description: 'Soaking tub + double rainfall shower heads for post-adventure resets.',
+    images: [
+      { src: '/images/bathroom.jpg', alt: 'Main bathroom with soaking tub' },
+      { src: '/images/shower.jpg', alt: 'Large walk-in shower' },
+    ],
+  },
+  {
+    title: 'Stocked + ready',
+    description:
+      'Shampoo, conditioner, towels, and all the little comforts ready on arrival.',
+    images: [{ src: '/images/second-bathroom.jpg', alt: 'Upstairs bathroom vanity' }],
+  },
+];
+
+const recRoomFeatures = [
+  {
+    title: 'Rock wall + crash pad',
+    detail: 'Kid-friendly climbing wall with safety mats.',
+  },
+  {
+    title: 'Indoor swingset',
+    detail: 'Interchangeable swing set for all ages.',
+  },
+  {
+    title: 'Pool + ping pong table',
+    detail: 'Full-size combo table for friendly tournaments.',
+  },
+  {
+    title: 'Arcade lineup',
+    detail: '5000-in-1 arcade + basketball machine.',
+  },
+  {
+    title: '75\" theater TV',
+    detail: 'Three recliners for movie nights and game days.',
   },
 ];
 
@@ -319,9 +396,9 @@ const spaceShowcase = [
     title: 'Kitchen + dining',
     description: 'Fully stocked kitchen with space for shared meals.',
     images: [
-      { src: '/images/kitchen.jpg', alt: 'Kitchen overview' },
-      { src: '/images/kitchen-zoom-out.jpg', alt: 'Kitchen wide angle' },
       { src: '/images/kitchen-sink.webp', alt: 'Kitchen sink and finishes' },
+      { src: '/images/kitchen-zoom-out.jpg', alt: 'Kitchen wide angle' },
+      { src: '/images/kitchen.jpg', alt: 'Kitchen overview' },
       { src: '/images/dining-table.jpg', alt: 'Dining table' },
     ],
   },
@@ -338,20 +415,20 @@ const spaceShowcase = [
     title: 'Play area + rec zone',
     description: 'Arcade, climbing, and fun for all ages.',
     images: [
-      { src: '/images/play-area.jpg', alt: 'Indoor play area' },
       { src: '/images/play-area-2.jpg', alt: 'Play area activities' },
       { src: '/images/play-area-3.jpg', alt: 'Play area equipment' },
       { src: '/images/play-area-4.jpg', alt: 'Play area seating' },
       { src: '/images/play-area-5.jpg', alt: 'Play area with games' },
+      { src: '/images/play-area.jpg', alt: 'Indoor play area' },
     ],
   },
   {
     title: 'Outdoor deck + covered porch',
     description: 'Fresh air lounging with forest views.',
     images: [
+      { src: '/images/covered-porch-2.jpg', alt: 'Covered porch view' },
       { src: '/images/outdoor-deck.jpg', alt: 'Outdoor deck and patio' },
       { src: '/images/covered-porch.jpg', alt: 'Covered porch seating' },
-      { src: '/images/covered-porch-2.jpg', alt: 'Covered porch view' },
     ],
   },
   {
@@ -767,91 +844,128 @@ function GalleryGrid({
 
 function GalleryCarousel({ images }: { images: MediaImage[] }) {
   const [order, setOrder] = useState(() => shuffleImages(images));
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [nextIndex, setNextIndex] = useState<number | null>(null);
+  const [showNext, setShowNext] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
 
   useEffect(() => {
     setOrder(shuffleImages(images));
+    setActiveIndex(0);
+    setNextIndex(null);
+    setShowNext(false);
+    setIsTransitioning(false);
   }, [images]);
 
-  const getStep = () => {
-    const scroller = scrollerRef.current;
-    if (!scroller) return 0;
-    const firstCard = scroller.querySelector<HTMLElement>('[data-carousel-card]');
-    if (!firstCard) return 0;
-    const style = window.getComputedStyle(scroller);
-    const gapValue = style.columnGap || style.gap || '16px';
-    const gap = Number.parseFloat(gapValue) || 16;
-    return firstCard.offsetWidth + gap;
-  };
+  const advance = (direction: 1 | -1) => {
+    if (isTransitioning) return;
+    const total = order.length;
+    if (total === 0) return;
+    const target = (activeIndex + direction + total) % total;
 
-  const scrollByStep = (direction: 1 | -1) => {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-    const step = getStep();
-    if (!step) return;
-    const maxScroll = scroller.scrollWidth - scroller.clientWidth;
-    const next = scroller.scrollLeft + step * direction;
-
-    if (direction === 1 && next >= maxScroll - 4) {
-      setOrder(shuffleImages(images));
-      scroller.scrollTo({ left: 0, behavior: 'smooth' });
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setActiveIndex(target);
+      if (direction === 1 && target === 0) {
+        setOrder(shuffleImages(images));
+      }
       return;
     }
-    if (direction === -1 && next <= 0) {
-      scroller.scrollTo({ left: maxScroll, behavior: 'smooth' });
-      return;
-    }
-    scroller.scrollBy({ left: step * direction, behavior: 'smooth' });
+
+    const nextImage = order[target];
+    if (!nextImage) return;
+
+    setIsTransitioning(true);
+    const preloader = new Image();
+    preloader.src = nextImage.src;
+    preloader.onload = () => {
+      setNextIndex(target);
+      setShowNext(false);
+      window.requestAnimationFrame(() => setShowNext(true));
+      window.setTimeout(() => {
+        setActiveIndex(target);
+        setNextIndex(null);
+        setShowNext(false);
+        setIsTransitioning(false);
+        if (direction === 1 && target === 0) {
+          setOrder(shuffleImages(images));
+        }
+      }, 700);
+    };
   };
 
   useEffect(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!isPlaying) return;
+    const timeout = window.setTimeout(() => {
+      if (!document.hidden) {
+        advance(1);
+      }
+    }, 5200);
+    return () => window.clearTimeout(timeout);
+  }, [activeIndex, isPlaying, order]);
 
-    const interval = window.setInterval(() => {
-      if (document.hidden) return;
-      scrollByStep(1);
-    }, 4200);
+  const active = order[activeIndex];
+  const next = nextIndex !== null ? order[nextIndex] : null;
 
-    return () => window.clearInterval(interval);
-  }, [order]);
+  if (!active) return null;
 
   return (
-    <div className="relative">
-      <div
-        ref={scrollerRef}
-        className="flex gap-4 overflow-x-auto scroll-smooth pb-4 pt-2"
-      >
-        {order.map((image) => (
-          <div
-            key={`${image.src}-${image.alt}`}
-            data-carousel-card
-            className="min-w-[220px] flex-[0_0_72%] overflow-hidden rounded-3xl border border-sand-200/70 bg-sand-100/80 shadow-lg sm:min-w-[260px] sm:flex-[0_0_46%] lg:min-w-[280px] lg:flex-[0_0_28%]"
-          >
-            <img
-              src={image.src}
-              alt={image.alt}
-              loading="lazy"
-              className="h-52 w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
-            />
+    <div className="relative overflow-hidden rounded-3xl border border-sand-200/70 bg-sand-100/80 shadow-lg">
+      <div className="relative h-80 sm:h-96 lg:h-[420px]">
+        <img
+          src={active.src}
+          alt={active.alt}
+          loading="lazy"
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            next && showNext ? 'opacity-0' : 'opacity-100'
+          }`}
+        />
+        {next && (
+          <img
+            src={next.src}
+            alt={next.alt}
+            loading="lazy"
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              showNext ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        )}
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-pine-900/55 via-transparent to-transparent pb-6 pt-16">
+          <div className="mx-auto flex w-full max-w-6xl items-end justify-between px-6 text-sand-50">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-sand-200">
+                Gallery highlight
+              </p>
+              <p className="mt-2 text-xl font-semibold sm:text-2xl">{active.alt}</p>
+            </div>
+            <span className="rounded-full bg-sand-50/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em]">
+              {activeIndex + 1}/{order.length}
+            </span>
           </div>
-        ))}
+        </div>
       </div>
-      <div className="absolute right-4 top-0 flex gap-2">
+      <div className="absolute right-4 top-4 flex gap-2">
         <button
           type="button"
-          onClick={() => scrollByStep(-1)}
+          onClick={() => advance(-1)}
           className="flex h-9 w-9 items-center justify-center rounded-full border border-sand-200/70 bg-sand-50 text-pine-900 shadow-sm transition hover:border-ember-500/40 hover:text-ember-600"
-          aria-label="Scroll gallery left"
+          aria-label="Previous gallery image"
         >
           ‹
         </button>
         <button
           type="button"
-          onClick={() => scrollByStep(1)}
+          onClick={() => setIsPlaying((prev) => !prev)}
           className="flex h-9 w-9 items-center justify-center rounded-full border border-sand-200/70 bg-sand-50 text-pine-900 shadow-sm transition hover:border-ember-500/40 hover:text-ember-600"
-          aria-label="Scroll gallery right"
+          aria-label={isPlaying ? 'Pause gallery autoplay' : 'Play gallery autoplay'}
+        >
+          {isPlaying ? '❚❚' : '▶'}
+        </button>
+        <button
+          type="button"
+          onClick={() => advance(1)}
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-sand-200/70 bg-sand-50 text-pine-900 shadow-sm transition hover:border-ember-500/40 hover:text-ember-600"
+          aria-label="Next gallery image"
         >
           ›
         </button>
@@ -1018,8 +1132,10 @@ function HomePage() {
           {stats.map((stat) => (
             <Card key={stat.label}>
               <CardHeader>
-                <CardTitle className="text-2xl font-semibold text-pine-900">{stat.value}</CardTitle>
-                <CardDescription className="text-xs uppercase tracking-[0.25em] text-pine-500">
+                <CardTitle className="font-display text-3xl font-semibold leading-tight text-pine-900 sm:text-4xl">
+                  {stat.value}
+                </CardTitle>
+                <CardDescription className="text-sm font-semibold uppercase tracking-[0.18em] text-pine-600">
                   {stat.label}
                 </CardDescription>
               </CardHeader>
@@ -1176,6 +1292,84 @@ function HomePage() {
               </Card>
             ))}
           </div>
+          <div className="mt-12 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+            <Card className="overflow-hidden">
+              <div className="relative h-full min-h-[260px]">
+                <video
+                  className="h-full w-full object-cover"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  poster="/images/play-area-5.jpg"
+                >
+                  <source src="/images/play-area.mp4" type="video/mp4" />
+                </video>
+                <div className="absolute inset-0 bg-gradient-to-t from-pine-900/55 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 space-y-2 text-sand-50">
+                  <p className="text-xs font-semibold uppercase tracking-[0.4em] text-sand-200">
+                    Rec room
+                  </p>
+                  <p className="text-2xl font-semibold">A 1,200 sq ft play zone.</p>
+                </div>
+              </div>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl">Family entertainment built in.</CardTitle>
+                <CardDescription>
+                  Every detail is designed to keep kids busy and adults relaxed.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4 sm:grid-cols-2">
+                {recRoomFeatures.map((feature) => (
+                  <div key={feature.title} className="space-y-2">
+                    <p className="text-sm font-semibold text-pine-900">{feature.title}</p>
+                    <p className="text-sm text-pine-600">{feature.detail}</p>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+          <div className="mt-12 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+            <Card className="overflow-hidden">
+              <div className="relative h-full min-h-[260px]">
+                <video
+                  className="h-full w-full object-cover"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  poster="/images/indoor-spa.jpg"
+                >
+                  <source src="/images/spa.mp4" type="video/mp4" />
+                </video>
+                <div className="absolute inset-0 bg-gradient-to-t from-pine-900/50 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 space-y-2 text-sand-50">
+                  <p className="text-xs font-semibold uppercase tracking-[0.4em] text-sand-200">
+                    Wellness
+                  </p>
+                  <p className="text-2xl font-semibold">Indoor spa + hot tub.</p>
+                </div>
+              </div>
+            </Card>
+            <div className="grid gap-6">
+              {bathHighlights.map((bath) => (
+                <Card key={bath.title}>
+                  <MediaCarousel
+                    images={bath.images}
+                    className="h-40 rounded-b-none border-b border-sand-200/70"
+                  />
+                  <CardHeader className="space-y-2">
+                    <CardTitle className="text-lg">{bath.title}</CardTitle>
+                    <CardDescription>{bath.description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </div>
           <div className="mt-12">
             <p className="text-xs font-semibold uppercase tracking-[0.4em] text-pine-500">
               Signature spaces
@@ -1203,8 +1397,18 @@ function HomePage() {
               {spaceHighlights.map((space) => {
                 const Icon = space.icon;
                 return (
-                  <Card key={space.title}>
-                    <CardContent className="flex items-center gap-4 pt-6">
+                  <Card key={space.title} className="flex h-full flex-col overflow-hidden">
+                    {space.image && (
+                      <div className="h-48 overflow-hidden border-b border-sand-200/70">
+                        <img
+                          src={space.image.src}
+                          alt={space.image.alt}
+                          loading="lazy"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <CardContent className="flex flex-1 items-center gap-4 pt-6">
                       <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sand-50 text-ember-600">
                         <Icon className="h-6 w-6" aria-hidden="true" />
                       </span>
@@ -1632,8 +1836,8 @@ export default function App() {
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:gap-6 sm:px-6 sm:py-5">
           <div className="space-y-1">
             <a href="/" className="block">
-              <p className="font-display text-lg uppercase tracking-[0.35em] text-pine-700">
-                Birch & Bark
+              <p className="font-display text-lg font-semibold uppercase tracking-[0.24em] text-pine-700 sm:text-xl">
+                Birch & Bark Retreat
               </p>
               <p className="text-xs font-semibold text-pine-600">Petoskey, Michigan</p>
             </a>

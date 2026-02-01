@@ -46,6 +46,15 @@
   .gradient-ring {
     box-shadow: 0 0 0 1px rgba(186, 139, 90, 0.3), 0 18px 40px rgba(24, 20, 15, 0.2);
   }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
