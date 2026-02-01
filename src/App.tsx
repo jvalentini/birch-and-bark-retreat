@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   IconBalcony,
   IconBath,
@@ -35,6 +35,15 @@ import { Separator } from '@/components/ui/separator';
 type MediaImage = {
   src: string;
   alt: string;
+};
+
+const shuffleImages = <T,>(items: T[]) => {
+  const array = [...items];
+  for (let index = array.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [array[index], array[swapIndex]] = [array[swapIndex], array[index]];
+  }
+  return array;
 };
 
 const navItems = [
@@ -756,6 +765,101 @@ function GalleryGrid({
   );
 }
 
+function GalleryCarousel({ images }: { images: MediaImage[] }) {
+  const [order, setOrder] = useState(() => shuffleImages(images));
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setOrder(shuffleImages(images));
+  }, [images]);
+
+  const getStep = () => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return 0;
+    const firstCard = scroller.querySelector<HTMLElement>('[data-carousel-card]');
+    if (!firstCard) return 0;
+    const style = window.getComputedStyle(scroller);
+    const gapValue = style.columnGap || style.gap || '16px';
+    const gap = Number.parseFloat(gapValue) || 16;
+    return firstCard.offsetWidth + gap;
+  };
+
+  const scrollByStep = (direction: 1 | -1) => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const step = getStep();
+    if (!step) return;
+    const maxScroll = scroller.scrollWidth - scroller.clientWidth;
+    const next = scroller.scrollLeft + step * direction;
+
+    if (direction === 1 && next >= maxScroll - 4) {
+      setOrder(shuffleImages(images));
+      scroller.scrollTo({ left: 0, behavior: 'smooth' });
+      return;
+    }
+    if (direction === -1 && next <= 0) {
+      scroller.scrollTo({ left: maxScroll, behavior: 'smooth' });
+      return;
+    }
+    scroller.scrollBy({ left: step * direction, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const interval = window.setInterval(() => {
+      if (document.hidden) return;
+      scrollByStep(1);
+    }, 4200);
+
+    return () => window.clearInterval(interval);
+  }, [order]);
+
+  return (
+    <div className="relative">
+      <div
+        ref={scrollerRef}
+        className="flex gap-4 overflow-x-auto scroll-smooth pb-4 pt-2"
+      >
+        {order.map((image) => (
+          <div
+            key={`${image.src}-${image.alt}`}
+            data-carousel-card
+            className="min-w-[220px] flex-[0_0_72%] overflow-hidden rounded-3xl border border-sand-200/70 bg-sand-100/80 shadow-lg sm:min-w-[260px] sm:flex-[0_0_46%] lg:min-w-[280px] lg:flex-[0_0_28%]"
+          >
+            <img
+              src={image.src}
+              alt={image.alt}
+              loading="lazy"
+              className="h-52 w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
+            />
+          </div>
+        ))}
+      </div>
+      <div className="absolute right-4 top-0 flex gap-2">
+        <button
+          type="button"
+          onClick={() => scrollByStep(-1)}
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-sand-200/70 bg-sand-50 text-pine-900 shadow-sm transition hover:border-ember-500/40 hover:text-ember-600"
+          aria-label="Scroll gallery left"
+        >
+          ‹
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollByStep(1)}
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-sand-200/70 bg-sand-50 text-pine-900 shadow-sm transition hover:border-ember-500/40 hover:text-ember-600"
+          aria-label="Scroll gallery right"
+        >
+          ›
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function MediaCarousel({
   images,
   className,
@@ -1126,7 +1230,7 @@ function HomePage() {
             </Button>
           </div>
           <div className="mt-10">
-            <GalleryGrid images={gallery} />
+            <GalleryCarousel images={gallery} />
           </div>
         </div>
       </section>
