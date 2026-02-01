@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /.env
+Disallow: /.git/
+Disallow: /*.json$
+
+Sitemap: https://www.birchandbarkretreat.com/sitemap.xml
