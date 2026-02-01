@@ -14,6 +14,7 @@
     "seo:sitemap": "bun run scripts/seo/sitemap.ts",
     "seo:robots": "bun run scripts/seo/robots.ts",
     "seo:validate": "bun run scripts/seo/schema.ts",
+    "seo:lighthouse-compare": "bun run scripts/seo/lighthouse-compare.ts",
     "seo:all": "bun run seo:sitemap && bun run seo:robots && bun run seo:validate",
     "seo:competitors": "bun run scripts/seo/competitors.ts",
     "deploy": "bun run build && wrangler pages deploy dist --project-name birch-and-bark-retreats",

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lighthouse Comparison | Birch & Bark Retreat</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f1e8;
+        --ink: #1a201a;
+        --muted: #586457;
+        --card: #fffdf8;
+        --accent: #b26a3a;
+        --accent-strong: #8f4c23;
+        --border: rgba(32, 36, 32, 0.15);
+        --shadow: 0 18px 36px rgba(25, 22, 18, 0.12);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      header {
+        padding: 2.75rem 1.5rem 1.5rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      h1 {
+        margin: 0 0 0.5rem;
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-size: clamp(2.2rem, 4vw, 3rem);
+      }
+      p { margin: 0; color: var(--muted); }
+      .summary {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.5rem 2rem;
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 1.25rem 1.5rem;
+        box-shadow: var(--shadow);
+      }
+      .card h3 {
+        margin: 0 0 0.5rem;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+      }
+      .score {
+        font-family: "Cormorant Garamond", Georgia, serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .score span {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--muted);
+        margin-left: 0.4rem;
+      }
+      .delta {
+        margin-top: 0.35rem;
+        font-size: 0.9rem;
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .grid {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.5rem 2rem;
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+      .grid ul {
+        padding-left: 1rem;
+        margin: 0.75rem 0 0;
+        color: var(--muted);
+      }
+      .controls {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.5rem 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+      }
+      .tab {
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--ink);
+        padding: 0.6rem 1rem;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: transform 0.15s ease, border-color 0.2s ease, color 0.2s ease;
+      }
+      .tab:hover { transform: translateY(-1px); border-color: rgba(178,106,58,0.5); color: var(--accent); }
+      .tab.active { background: var(--accent); color: #fff; border-color: transparent; }
+      .links {
+        margin-left: auto;
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .links a {
+        font-size: 0.85rem;
+        color: var(--muted);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+      }
+      .links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+      .panel {
+        max-width: 1100px;
+        margin: 0 auto 2rem;
+        padding: 0 1.5rem 2rem;
+      }
+      .frame {
+        width: 100%;
+        height: 80vh;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--card);
+      }
+      .note {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-top: 0.75rem;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(178,106,58,0.12);
+        color: var(--accent-strong);
+        padding: 0.35rem 0.6rem;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span class="badge">Client‑ready summary</span>
+      <h1>Lighthouse Comparison</h1>
+      <p>Clear evidence of how the new Birch & Bark site outperforms the current live site.</p>
+    </header>
+
+    <section class="summary">
+      <div class="card">
+        <h3>Performance</h3>
+        <div class="score">93 <span>new</span> · 55 <span>old</span></div>
+        <div class="delta">+38 point lift</div>
+      </div>
+      <div class="card">
+        <h3>Accessibility</h3>
+        <div class="score">98 <span>new</span> · 72 <span>old</span></div>
+        <div class="delta">+26 point lift</div>
+      </div>
+      <div class="card">
+        <h3>Best Practices</h3>
+        <div class="score">100 <span>new</span> · 96 <span>old</span></div>
+        <div class="delta">Near perfect score</div>
+      </div>
+      <div class="card">
+        <h3>SEO</h3>
+        <div class="score">69 <span>new</span> · 77 <span>old</span></div>
+        <p class="note">SEO is lower on the new site because it is in <strong>staging mode</strong> with <code>noindex</code>. When you go live on the .com domain, this score will rise.</p>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h3>Where the current site falls short</h3>
+        <ul>
+          <li>Performance score in the 50s means slower load and higher bounce.</li>
+          <li>Lower accessibility score suggests missing labels/contrast issues.</li>
+          <li>Best Practices and SEO not fully optimized for conversions.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>What the new site fixes</h3>
+        <ul>
+          <li>Much faster, cleaner build (Performance 93).</li>
+          <li>Accessibility almost perfect for guests on any device.</li>
+          <li>Modern metadata + schema ready to flip live.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Next step to unlock full SEO</h3>
+        <ul>
+          <li>Move the new site to <strong>birchandbarkretreat.com</strong>.</li>
+          <li>Remove <code>noindex</code> staging flag.</li>
+          <li>Submit the sitemap in Google Search Console.</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button class="tab active" data-target="comparison">Comparison</button>
+      <button class="tab" data-target="new">New Site</button>
+      <button class="tab" data-target="old">Old Site</button>
+      <div class="links">
+        <a href="lighthouse-comparison.html" target="_blank" rel="noreferrer">Open comparison</a>
+        <a href="lighthouse-new.report.html" target="_blank" rel="noreferrer">Open new report</a>
+        <a href="lighthouse-old.report.html" target="_blank" rel="noreferrer">Open old report</a>
+      </div>
+    </div>
+
+    <div class="panel">
+      <iframe
+        class="frame"
+        id="reportFrame"
+        src="lighthouse-comparison.html"
+        title="Lighthouse report"
+        loading="lazy"
+      ></iframe>
+      <p class="note">Use the buttons above to toggle between reports.</p>
+    </div>
+
+    <script>
+      const tabs = document.querySelectorAll('.tab');
+      const frame = document.getElementById('reportFrame');
+      const sources = {
+        comparison: 'lighthouse-comparison.html',
+        new: 'lighthouse-new.report.html',
+        old: 'lighthouse-old.report.html',
+      };
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          tabs.forEach((btn) => btn.classList.remove('active'));
+          tab.classList.add('active');
+          const key = tab.getAttribute('data-target');
+          frame.src = sources[key];
+        });
+      });
+    </script>
+  </body>
+</html>
