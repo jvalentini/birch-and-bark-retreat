@@ -756,6 +756,57 @@ function GalleryGrid({
   );
 }
 
+function MediaCarousel({
+  images,
+  className,
+}: {
+  images: MediaImage[];
+  className?: string;
+}) {
+  const [index, setIndex] = useState(0);
+  const hasMultiple = images.length > 1;
+  const active = images[index] ?? images[0];
+
+  const showPrev = () => setIndex((prev) => (prev - 1 + images.length) % images.length);
+  const showNext = () => setIndex((prev) => (prev + 1) % images.length);
+
+  return (
+    <div
+      className={`group relative overflow-hidden rounded-3xl bg-sand-100/80 ${className ?? ''}`}
+    >
+      <img
+        src={active.src}
+        alt={active.alt}
+        loading="lazy"
+        className="h-full w-full object-cover"
+      />
+      {hasMultiple && (
+        <>
+          <button
+            type="button"
+            onClick={showPrev}
+            aria-label="View previous image"
+            className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-sand-50/90 text-lg text-pine-900 opacity-100 shadow-md transition hover:bg-sand-50 md:opacity-0 md:group-hover:opacity-100"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={showNext}
+            aria-label="View next image"
+            className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-sand-50/90 text-lg text-pine-900 opacity-100 shadow-md transition hover:bg-sand-50 md:opacity-0 md:group-hover:opacity-100"
+          >
+            ›
+          </button>
+          <div className="absolute bottom-3 right-3 rounded-full bg-pine-900/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-sand-50">
+            {index + 1}/{images.length}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 function StickyBookingBar({ visible }: { visible: boolean }) {
   if (!visible) return null;
 
@@ -969,14 +1020,10 @@ function HomePage() {
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
             {sleepingArrangements.map((room) => (
               <Card key={room.title}>
-                <div className="overflow-hidden rounded-3xl border-b border-sand-200/70">
-                  <img
-                    src={room.image}
-                    alt={room.alt}
-                    className="h-40 w-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
+                <MediaCarousel
+                  images={room.images}
+                  className="h-44 rounded-b-none border-b border-sand-200/70"
+                />
                 <CardHeader className="space-y-3">
                   <div className="flex items-center justify-between">
                     <CardTitle>{room.title}</CardTitle>
@@ -1002,6 +1049,10 @@ function HomePage() {
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
             {bathrooms.map((bath) => (
               <Card key={bath.title}>
+                <MediaCarousel
+                  images={bath.images}
+                  className="h-44 rounded-b-none border-b border-sand-200/70"
+                />
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sand-50 text-ember-600">
@@ -1020,6 +1071,25 @@ function HomePage() {
                 </CardHeader>
               </Card>
             ))}
+          </div>
+          <div className="mt-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-pine-500">
+              Signature spaces
+            </p>
+            <div className="mt-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {spaceShowcase.map((space) => (
+                <Card key={space.title}>
+                  <MediaCarousel
+                    images={space.images}
+                    className="h-48 rounded-b-none border-b border-sand-200/70"
+                  />
+                  <CardHeader className="space-y-2">
+                    <CardTitle className="text-lg">{space.title}</CardTitle>
+                    <CardDescription>{space.description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
           </div>
           <div className="mt-10">
             <p className="text-xs font-semibold uppercase tracking-[0.4em] text-pine-500">
