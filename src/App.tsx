@@ -280,39 +280,6 @@ const popularAmenities = [
   { title: 'EV charger', icon: IconEV },
 ];
 
-const spaceHighlights = [
-  {
-    title: 'Deck / patio',
-    icon: IconDeck,
-    image: { src: '/images/outdoor-deck.jpg', alt: 'Outdoor deck and patio' },
-  },
-  {
-    title: 'Balcony + covered porch',
-    icon: IconBalcony,
-    image: { src: '/images/covered-porch.jpg', alt: 'Covered porch seating' },
-  },
-  {
-    title: 'Kitchen',
-    icon: IconKitchen,
-    image: { src: '/images/kitchen.jpg', alt: 'Kitchen overview' },
-  },
-  {
-    title: 'Dining area',
-    icon: IconDining,
-    image: { src: '/images/dining-table.jpg', alt: 'Dining table setting' },
-  },
-  {
-    title: 'Outdoor play area',
-    icon: IconPlay,
-    image: { src: '/images/play-area.jpg', alt: 'Indoor play area' },
-  },
-  {
-    title: 'Garden',
-    icon: IconGarden,
-    image: { src: '/images/outside-house.jpg', alt: 'Wooded surroundings' },
-  },
-];
-
 const bathrooms = [
   {
     title: 'Downstairs bathroom',
@@ -406,9 +373,9 @@ const spaceShowcase = [
     title: 'Indoor spa + jacuzzi',
     description: 'Warm soaks and year-round wellness in the indoor spa.',
     images: [
-      { src: '/images/indoor-spa.jpg', alt: 'Indoor spa and exercise pool' },
       { src: '/images/jacuzzi.jpg', alt: 'Jacuzzi area' },
       { src: '/images/jacuzzi-2.jpg', alt: 'Jacuzzi detail' },
+      { src: '/images/indoor-spa.jpg', alt: 'Indoor spa and exercise pool' },
     ],
   },
   {
@@ -1387,36 +1354,6 @@ function HomePage() {
                   </CardHeader>
                 </Card>
               ))}
-            </div>
-          </div>
-          <div className="mt-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-pine-500">
-              Spaces to enjoy
-            </p>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {spaceHighlights.map((space) => {
-                const Icon = space.icon;
-                return (
-                  <Card key={space.title} className="flex h-full flex-col overflow-hidden">
-                    {space.image && (
-                      <div className="h-48 overflow-hidden border-b border-sand-200/70">
-                        <img
-                          src={space.image.src}
-                          alt={space.image.alt}
-                          loading="lazy"
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                    )}
-                    <CardContent className="flex flex-1 items-center gap-4 pt-6">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sand-50 text-ember-600">
-                        <Icon className="h-6 w-6" aria-hidden="true" />
-                      </span>
-                      <span className="font-semibold text-pine-800">{space.title}</span>
-                    </CardContent>
-                  </Card>
-                );
-              })}
             </div>
           </div>
         </div>
