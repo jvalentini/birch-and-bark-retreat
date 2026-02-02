@@ -8,7 +8,7 @@
         "@radix-ui/react-accordion": "^1.2.12",
         "@radix-ui/react-separator": "^1.1.8",
         "@radix-ui/react-slot": "^1.2.4",
-        "@valentini/seo-tools": "github:jvalentini/seo-tools#e6b890f",
+        "@valentini/seo-tools": "github:jvalentini/seo-tools#3b21255",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "react": "^19.2.4",
@@ -299,7 +299,7 @@
 
     "@types/react-dom": ["@types/react-dom@19.2.3", "", { "peerDependencies": { "@types/react": "^19.2.0" } }, "sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ=="],
 
-    "@valentini/seo-tools": ["@valentini/seo-tools@github:jvalentini/seo-tools#e6b890f", { "bin": { "seo-lighthouse-compare": "./src/lighthouse-compare.ts" } }, "jvalentini-seo-tools-e6b890f"],
+    "@valentini/seo-tools": ["@valentini/seo-tools@github:jvalentini/seo-tools#3b21255", { "bin": { "seo-lighthouse-compare": "./src/lighthouse-compare.ts" } }, "jvalentini-seo-tools-3b21255"],
 
     "@vitejs/plugin-react": ["@vitejs/plugin-react@5.1.2", "", { "dependencies": { "@babel/core": "^7.28.5", "@babel/plugin-transform-react-jsx-self": "^7.27.1", "@babel/plugin-transform-react-jsx-source": "^7.27.1", "@rolldown/pluginutils": "1.0.0-beta.53", "@types/babel__core": "^7.20.5", "react-refresh": "^0.18.0" }, "peerDependencies": { "vite": "^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0" } }, "sha512-EcA07pHJouywpzsoTUqNh5NwGayl2PPVEJKUSinGGSxFGYn+shYbqMGBg6FXDqgXum9Ou/ecb+411ssw8HImJQ=="],
 
