@@ -19,6 +19,10 @@
         --accent-strong: #8f4c23;
         --border: rgba(32, 36, 32, 0.15);
         --shadow: 0 18px 36px rgba(25, 22, 18, 0.12);
+        --good: #1d7a3c;
+        --good-bg: rgba(29, 122, 60, 0.12);
+        --bad: #b63b3b;
+        --bad-bg: rgba(182, 59, 59, 0.12);
       }
       * { box-sizing: border-box; }
       body {
@@ -26,6 +30,8 @@
         font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
         background: var(--bg);
         color: var(--ink);
+        line-height: 1.6;
+        font-size: 16px;
       }
       header {
         padding: 2.75rem 1.5rem 1.5rem;
@@ -34,8 +40,10 @@
       }
       h1 {
         margin: 0 0 0.5rem;
-        font-family: "Cormorant Garamond", Georgia, serif;
-        font-size: clamp(2.2rem, 4vw, 3rem);
+        font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        font-size: clamp(2.1rem, 4vw, 2.8rem);
       }
       p { margin: 0; color: var(--muted); }
       .summary {
@@ -52,25 +60,87 @@
         border-radius: 20px;
         padding: 1.25rem 1.5rem;
         box-shadow: var(--shadow);
+        text-align: center;
       }
       .card h3 {
         margin: 0 0 0.5rem;
-        font-size: 1rem;
+        font-size: 0.95rem;
         text-transform: uppercase;
-        letter-spacing: 0.2em;
+        letter-spacing: 0.12em;
         color: var(--muted);
       }
       .score {
-        font-family: "Cormorant Garamond", Georgia, serif;
-        font-size: 2.2rem;
+        display: grid;
+        gap: 0.75rem;
+        justify-items: center;
+        margin-top: 0.75rem;
+      }
+      .score-row {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        width: 100%;
+      }
+      .score-pair {
+        display: grid;
+        gap: 0.2rem;
+        justify-items: center;
+        background: rgba(178, 106, 58, 0.08);
+        border-radius: 16px;
+        padding: 0.6rem 0.9rem;
+        min-width: 110px;
+      }
+      .score-pair.new {
+        background: var(--good-bg);
+        border: 1px solid rgba(29, 122, 60, 0.2);
+      }
+      .score-pair.old {
+        background: var(--bad-bg);
+        border: 1px solid rgba(182, 59, 59, 0.18);
+      }
+      .score-pair span {
+        font-size: 0.75rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .score-value {
+        font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+        font-size: 1.8rem;
         font-weight: 700;
         color: var(--ink);
       }
-      .score span {
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--muted);
-        margin-left: 0.4rem;
+      .score-value.new {
+        color: var(--good);
+      }
+      .score-value.old {
+        color: var(--bad);
+      }
+      .score-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+      .score-badge.good {
+        background: var(--good-bg);
+        color: var(--good);
+      }
+      .score-badge.bad {
+        background: var(--bad-bg);
+        color: var(--bad);
+      }
+      .card-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
       }
       .delta {
         margin-top: 0.35rem;
@@ -90,6 +160,50 @@
         padding-left: 1rem;
         margin: 0.75rem 0 0;
         color: var(--muted);
+      }
+      .callout {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.5rem 2rem;
+      }
+      .callout-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        display: grid;
+        gap: 0.75rem;
+      }
+      .callout-card h3 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+      .timeline {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.5rem 2rem;
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+      .step {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 1.25rem;
+        box-shadow: var(--shadow);
+      }
+      .step .step-num {
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .step h4 {
+        margin: 0.6rem 0 0.4rem;
+        font-size: 1.05rem;
       }
       .controls {
         max-width: 1100px;
@@ -112,19 +226,6 @@
       }
       .tab:hover { transform: translateY(-1px); border-color: rgba(178,106,58,0.5); color: var(--accent); }
       .tab.active { background: var(--accent); color: #fff; border-color: transparent; }
-      .links {
-        margin-left: auto;
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-      }
-      .links a {
-        font-size: 0.85rem;
-        color: var(--muted);
-        text-decoration: none;
-        border-bottom: 1px solid transparent;
-      }
-      .links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
       .panel {
         max-width: 1100px;
         margin: 0 auto 2rem;
@@ -138,7 +239,7 @@
         background: var(--card);
       }
       .note {
-        font-size: 0.85rem;
+        font-size: 0.95rem;
         color: var(--muted);
         margin-top: 0.75rem;
       }
@@ -166,24 +267,87 @@
 
     <section class="summary">
       <div class="card">
-        <h3>Performance</h3>
-        <div class="score">93 <span>new</span> · 55 <span>old</span></div>
-        <div class="delta">+38 point lift</div>
+        <div class="card-title">
+          <h3>Performance</h3>
+          <span class="score-badge good">+38</span>
+        </div>
+        <div class="score">
+          <span class="score-row">
+            <span class="score-pair new">
+              <span class="score-value new">93</span>
+              <span>new</span>
+            </span>
+            <span class="score-pair old">
+              <span class="score-value old">55</span>
+              <span>old</span>
+            </span>
+          </span>
+        </div>
+        <div class="delta">Speed jumps from mid‑50s to 90s.</div>
       </div>
       <div class="card">
-        <h3>Accessibility</h3>
-        <div class="score">98 <span>new</span> · 72 <span>old</span></div>
-        <div class="delta">+26 point lift</div>
+        <div class="card-title">
+          <h3>Accessibility</h3>
+          <span class="score-badge good">+26</span>
+        </div>
+        <div class="score">
+          <span class="score-row">
+            <span class="score-pair new">
+              <span class="score-value new">98</span>
+              <span>new</span>
+            </span>
+            <span class="score-pair old">
+              <span class="score-value old">72</span>
+              <span>old</span>
+            </span>
+          </span>
+        </div>
+        <div class="delta">Guests on all devices are supported.</div>
       </div>
       <div class="card">
-        <h3>Best Practices</h3>
-        <div class="score">100 <span>new</span> · 96 <span>old</span></div>
-        <div class="delta">Near perfect score</div>
+        <div class="card-title">
+          <h3>Best Practices</h3>
+          <span class="score-badge good">+4</span>
+        </div>
+        <div class="score">
+          <span class="score-row">
+            <span class="score-pair new">
+              <span class="score-value new">100</span>
+              <span>new</span>
+            </span>
+            <span class="score-pair old">
+              <span class="score-value old">96</span>
+              <span>old</span>
+            </span>
+          </span>
+        </div>
+        <div class="delta">Modern build with fewer issues.</div>
       </div>
       <div class="card">
-        <h3>SEO</h3>
-        <div class="score">69 <span>new</span> · 77 <span>old</span></div>
+        <div class="card-title">
+          <h3>SEO</h3>
+          <span class="score-badge bad">Staging</span>
+        </div>
+        <div class="score">
+          <span class="score-row">
+            <span class="score-pair new">
+              <span class="score-value new">69</span>
+              <span>new</span>
+            </span>
+            <span class="score-pair old">
+              <span class="score-value old">77</span>
+              <span>old</span>
+            </span>
+          </span>
+        </div>
         <p class="note">SEO is lower on the new site because it is in <strong>staging mode</strong> with <code>noindex</code>. When you go live on the .com domain, this score will rise.</p>
+      </div>
+    </section>
+
+    <section class="callout">
+      <div class="callout-card">
+        <h3>Why this matters for bookings</h3>
+        <p>Faster load times and cleaner SEO mean guests reach the booking step sooner, trust the site more, and convert at higher rates. The new site’s speed and accessibility scores are already in the top tier.</p>
       </div>
     </section>
 
@@ -214,15 +378,28 @@
       </div>
     </section>
 
+    <section class="timeline">
+      <div class="step">
+        <div class="step-num">Step 1</div>
+        <h4>Approve the new site</h4>
+        <p>Lock in design, content, and booking flow.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 2</div>
+        <h4>Go live on .com</h4>
+        <p>Remove staging noindex and point the domain to Cloudflare Pages.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 3</div>
+        <h4>Climb rankings</h4>
+        <p>Submit sitemap and monitor gains in Search Console.</p>
+      </div>
+    </section>
+
     <div class="controls">
       <button class="tab active" data-target="comparison">Comparison</button>
       <button class="tab" data-target="new">New Site</button>
       <button class="tab" data-target="old">Old Site</button>
-      <div class="links">
-        <a href="lighthouse-comparison.html" target="_blank" rel="noreferrer">Open comparison</a>
-        <a href="lighthouse-new.report.html" target="_blank" rel="noreferrer">Open new report</a>
-        <a href="lighthouse-old.report.html" target="_blank" rel="noreferrer">Open old report</a>
-      </div>
     </div>
 
     <div class="panel">
@@ -233,7 +410,7 @@
         title="Lighthouse report"
         loading="lazy"
       ></iframe>
-      <p class="note">Use the buttons above to toggle between reports.</p>
+      <p class="note">Use the buttons above to toggle between full reports.</p>
     </div>
 
     <script>
