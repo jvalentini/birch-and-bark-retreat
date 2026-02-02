@@ -131,7 +131,22 @@
           padding: 0 1.5rem;
           display: flex;
           flex-wrap: wrap;
+          gap: 0.75rem 1.5rem;
+          align-items: center;
+        }
+        .site-links-group {
+          display: inline-flex;
+          flex-wrap: wrap;
           gap: 0.75rem;
+          align-items: center;
+        }
+        .site-links-group.summary-group {
+          margin-left: auto;
+        }
+        @media (max-width: 720px) {
+          .site-links-group.summary-group {
+            margin-left: 0;
+          }
         }
         .site-link {
           display: inline-flex;
@@ -198,7 +213,7 @@
         <h1>Lighthouse Comparison</h1>
         <div class="story-headline">From slow loads to a premium booking experience</div>
         <p>Side-by-side comparison of the old site and the new site.</p>
-        <div class="meta">Generated Feb 2, 2026, 8:25 AM</div>
+        <div class="meta">Generated Feb 2, 2026, 9:20 AM</div>
       </header>
 
       <section class="summary">
@@ -215,20 +230,24 @@
         </div>
         <div class="story-card">
           <h3>What the new build fixes</h3>
-          <ul><li>Clean labels and contrast support every guest.</li><li>Pages load much faster for guests on mobile.</li><li>Modern best practices keep the build solid.</li></ul>
+          <ul><li>Pages load much faster for guests on mobile.</li><li>Clean labels and contrast support every guest.</li><li>Modern best practices keep the build solid.</li></ul>
         </div>
         <div class="story-card">
           <h3>Why this matters</h3>
-          <p class="impact">Performance jumped by 25 points, which means faster loads and fewer drop-offs.</p>
+          <p class="impact">Performance jumped by 34 points, which means faster loads and fewer drop-offs.</p>
           <p class="impact">Faster pages and clearer trust signals move guests to booking sooner.</p>
         </div>
       </section>
 
       
       <div class="site-links">
-        <a class="site-link new" href="https://birch-and-bark-retreats.pages.dev/" target="_blank" rel="noreferrer">Open new site</a>
-        <a class="site-link old" href="https://www.birchandbarkretreat.com/" target="_blank" rel="noreferrer">Open old site</a>
-        <a class="site-link summary" href="lighthouse-new.summary.html">New site summary</a><a class="site-link summary" href="lighthouse-old.summary.html">Old site summary</a>
+        <div class="site-links-group">
+          <a class="site-link new" href="https://birch-and-bark-retreats.pages.dev/" target="_blank" rel="noreferrer">Open new site</a>
+          <a class="site-link old" href="https://www.birchandbarkretreat.com/" target="_blank" rel="noreferrer">Open old site</a>
+        </div>
+        <div class="site-links-group summary-group">
+          <a class="site-link summary" href="lighthouse-new.summary.html">New site summary</a><a class="site-link summary" href="lighthouse-old.summary.html">Old site summary</a>
+        </div>
       </div>
     
 
