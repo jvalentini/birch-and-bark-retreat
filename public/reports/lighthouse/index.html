@@ -251,6 +251,43 @@
           gap: 0.75rem;
           align-items: center;
         }
+        .site-links {
+          max-width: 1100px;
+          margin: 0 auto 1.5rem;
+          padding: 0 1.5rem;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+        }
+        .site-link {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.35rem;
+          padding: 0.6rem 1rem;
+          border-radius: 999px;
+          border: 1px solid var(--border);
+          background: var(--card);
+          color: var(--ink);
+          text-decoration: none;
+          font-weight: 600;
+          transition: transform 0.15s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+        .site-link:hover {
+          transform: translateY(-1px);
+          border-color: rgba(178,106,58,0.5);
+          color: var(--accent);
+        }
+        .site-link.new {
+          background: var(--good-bg);
+          border-color: rgba(29, 122, 60, 0.25);
+          color: var(--good);
+        }
+        .site-link.old {
+          background: var(--bad-bg);
+          border-color: rgba(182, 59, 59, 0.2);
+          color: var(--bad);
+        }
         .tab {
           border: 1px solid var(--border);
           background: var(--card);
@@ -282,7 +319,7 @@
         <h1>Lighthouse Comparison</h1>
         <div class="story-headline">A clearer, faster path to booking</div>
         <p>New site: New site (birch-and-bark-retreats.pages.dev) vs Old site: Old site (www.birchandbarkretreat.com)</p>
-        <div class="meta">Generated Feb 1, 2026, 7:48 PM · Avg score 75 → 83</div>
+        <div class="meta">Generated Feb 1, 2026, 7:52 PM · Avg score 75 → 83</div>
       </header>
 
       <section class="summary">
@@ -418,6 +455,13 @@
           <p class="impact">Faster pages and clearer trust signals move guests to booking sooner.</p>
         </div>
       </section>
+
+      
+      <div class="site-links">
+        <a class="site-link new" href="https://birch-and-bark-retreats.pages.dev" target="_blank" rel="noreferrer">Open new site</a>
+        <a class="site-link old" href="https://www.birchandbarkretreat.com" target="_blank" rel="noreferrer">Open old site</a>
+      </div>
+    
 
       <div class="controls">
         <button class="tab active" data-target="comparison">Comparison</button>
