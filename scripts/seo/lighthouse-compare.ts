@@ -8,7 +8,7 @@
  * This wrapper keeps Birch & Bark reports local while delegating logic to @valentini/seo-tools.
  */
 
-import { runLighthouseCompare } from '@valentini/seo-tools';
+import { runLighthouseCompare, writeLighthouseHub } from '@valentini/seo-tools';
 
 const args = process.argv.slice(2);
 const newUrl = args[0];
@@ -29,8 +29,19 @@ const result = await runLighthouseCompare({
   outDir,
 });
 
+const hub = writeLighthouseHub({
+  outDir: result.outDir,
+  newUrl,
+  oldUrl,
+  brandName: 'Birch & Bark Retreat',
+  title: 'Lighthouse Comparison',
+  stagingNote:
+    'SEO is lower on the new site because it is in staging mode with noindex. When you go live on the .com domain, this score will rise.',
+});
+
 console.log('\n--- Summary ---');
 console.log(`Reports written to ${result.outDir}`);
 console.log(`  ${result.newReportPath}`);
 console.log(`  ${result.oldReportPath}`);
 console.log(`  ${result.comparisonPath}`);
+console.log(`  ${hub.hubPath}`);

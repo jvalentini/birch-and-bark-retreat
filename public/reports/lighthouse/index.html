@@ -1,435 +1,457 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lighthouse Comparison | Birch & Bark Retreat</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        color-scheme: light;
-        --bg: #f6f1e8;
-        --ink: #1a201a;
-        --muted: #586457;
-        --card: #fffdf8;
-        --accent: #b26a3a;
-        --accent-strong: #8f4c23;
-        --border: rgba(32, 36, 32, 0.15);
-        --shadow: 0 18px 36px rgba(25, 22, 18, 0.12);
-        --good: #1d7a3c;
-        --good-bg: rgba(29, 122, 60, 0.12);
-        --bad: #b63b3b;
-        --bad-bg: rgba(182, 59, 59, 0.12);
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
-        background: var(--bg);
-        color: var(--ink);
-        line-height: 1.6;
-        font-size: 16px;
-      }
-      header {
-        padding: 2.75rem 1.5rem 1.5rem;
-        max-width: 1100px;
-        margin: 0 auto;
-      }
-      h1 {
-        margin: 0 0 0.5rem;
-        font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
-        font-weight: 700;
-        letter-spacing: 0.01em;
-        font-size: clamp(2.1rem, 4vw, 2.8rem);
-      }
-      p { margin: 0; color: var(--muted); }
-      .summary {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 0 1.5rem 2rem;
-        display: grid;
-        gap: 1.5rem;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      }
-      .card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 1.25rem 1.5rem;
-        box-shadow: var(--shadow);
-        text-align: center;
-      }
-      .card h3 {
-        margin: 0 0 0.5rem;
-        font-size: 0.95rem;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: var(--muted);
-      }
-      .score {
-        display: grid;
-        gap: 0.75rem;
-        justify-items: center;
-        margin-top: 0.75rem;
-      }
-      .score-row {
-        display: grid;
-        gap: 0.75rem;
-        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-        width: 100%;
-      }
-      .score-pair {
-        display: grid;
-        gap: 0.2rem;
-        justify-items: center;
-        background: rgba(178, 106, 58, 0.08);
-        border-radius: 16px;
-        padding: 0.6rem 0.9rem;
-        min-width: 110px;
-      }
-      .score-pair.new {
-        background: var(--good-bg);
-        border: 1px solid rgba(29, 122, 60, 0.2);
-      }
-      .score-pair.old {
-        background: var(--bad-bg);
-        border: 1px solid rgba(182, 59, 59, 0.18);
-      }
-      .score-pair span {
-        font-size: 0.75rem;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        color: var(--muted);
-        font-weight: 700;
-      }
-      .score-value {
-        font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--ink);
-      }
-      .score-value.new {
-        color: var(--good);
-      }
-      .score-value.old {
-        color: var(--bad);
-      }
-      .score-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        padding: 0.25rem 0.6rem;
-        border-radius: 999px;
-        font-size: 0.7rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        font-weight: 700;
-      }
-      .score-badge.good {
-        background: var(--good-bg);
-        color: var(--good);
-      }
-      .score-badge.bad {
-        background: var(--bad-bg);
-        color: var(--bad);
-      }
-      .card-title {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-      }
-      .delta {
-        margin-top: 0.35rem;
-        font-size: 0.9rem;
-        color: var(--accent);
-        font-weight: 600;
-      }
-      .grid {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 0 1.5rem 2rem;
-        display: grid;
-        gap: 1.5rem;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      }
-      .grid ul {
-        padding-left: 1rem;
-        margin: 0.75rem 0 0;
-        color: var(--muted);
-      }
-      .callout {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 0 1.5rem 2rem;
-      }
-      .callout-card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 1.5rem;
-        box-shadow: var(--shadow);
-        display: grid;
-        gap: 0.75rem;
-      }
-      .callout-card h3 {
-        margin: 0;
-        font-size: 1.1rem;
-      }
-      .timeline {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 0 1.5rem 2rem;
-        display: grid;
-        gap: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      }
-      .step {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 1.25rem;
-        box-shadow: var(--shadow);
-      }
-      .step .step-num {
-        font-size: 0.75rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--muted);
-        font-weight: 700;
-      }
-      .step h4 {
-        margin: 0.6rem 0 0.4rem;
-        font-size: 1.05rem;
-      }
-      .controls {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 0 1.5rem 1.5rem;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        align-items: center;
-      }
-      .tab {
-        border: 1px solid var(--border);
-        background: var(--card);
-        color: var(--ink);
-        padding: 0.6rem 1rem;
-        border-radius: 999px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: transform 0.15s ease, border-color 0.2s ease, color 0.2s ease;
-      }
-      .tab:hover { transform: translateY(-1px); border-color: rgba(178,106,58,0.5); color: var(--accent); }
-      .tab.active { background: var(--accent); color: #fff; border-color: transparent; }
-      .panel {
-        max-width: 1100px;
-        margin: 0 auto 2rem;
-        padding: 0 1.5rem 2rem;
-      }
-      .frame {
-        width: 100%;
-        height: 80vh;
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        background: var(--card);
-      }
-      .note {
-        font-size: 0.95rem;
-        color: var(--muted);
-        margin-top: 0.75rem;
-      }
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        background: rgba(178,106,58,0.12);
-        color: var(--accent-strong);
-        padding: 0.35rem 0.6rem;
-        border-radius: 999px;
-        font-weight: 600;
-        font-size: 0.75rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <span class="badge">Client‑ready summary</span>
-      <h1>Lighthouse Comparison</h1>
-      <p>Clear evidence of how the new Birch & Bark site outperforms the current live site.</p>
-    </header>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Lighthouse Comparison</title>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+      <style>
+        :root {
+          color-scheme: light;
+          --bg: #f6f1e8;
+          --ink: #1a201a;
+          --muted: #586457;
+          --card: #fffdf8;
+          --accent: #b26a3a;
+          --accent-strong: #8f4c23;
+          --border: rgba(32, 36, 32, 0.15);
+          --shadow: 0 18px 36px rgba(25, 22, 18, 0.12);
+          --good: #1d7a3c;
+          --good-bg: rgba(29, 122, 60, 0.12);
+          --bad: #b63b3b;
+          --bad-bg: rgba(182, 59, 59, 0.12);
+          --neutral: #6b6b6b;
+          --neutral-bg: rgba(107, 107, 107, 0.12);
+        }
+        * { box-sizing: border-box; }
+        body {
+          margin: 0;
+          font-family: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+          background: var(--bg);
+          color: var(--ink);
+          line-height: 1.6;
+          font-size: 16px;
+        }
+        header {
+          padding: 2.75rem 1.5rem 1.5rem;
+          max-width: 1100px;
+          margin: 0 auto;
+        }
+        h1 {
+          margin: 0 0 0.5rem;
+          font-weight: 700;
+          letter-spacing: 0.01em;
+          font-size: clamp(2.1rem, 4vw, 2.8rem);
+        }
+        p { margin: 0; color: var(--muted); }
+        .meta {
+          margin-top: 0.6rem;
+          font-size: 0.85rem;
+          color: var(--muted);
+        }
+        .story-headline {
+          margin: 0.4rem 0 0.4rem;
+          font-size: 1.05rem;
+          color: var(--accent-strong);
+          font-weight: 600;
+        }
+        .summary {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 0 1.5rem 2rem;
+          display: grid;
+          gap: 1.5rem;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+        .card {
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 20px;
+          padding: 1.25rem 1.5rem;
+          box-shadow: var(--shadow);
+          text-align: center;
+        }
+        .card h3 {
+          margin: 0 0 0.5rem;
+          font-size: 0.95rem;
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          color: var(--muted);
+        }
+        .score {
+          display: grid;
+          gap: 0.75rem;
+          justify-items: center;
+          margin-top: 0.75rem;
+        }
+        .score-row {
+          display: grid;
+          gap: 0.75rem;
+          grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+          width: 100%;
+        }
+        .score-pair {
+          display: grid;
+          gap: 0.2rem;
+          justify-items: center;
+          background: rgba(178, 106, 58, 0.08);
+          border-radius: 16px;
+          padding: 0.6rem 0.9rem;
+          min-width: 110px;
+        }
+        .score-pair.new {
+          background: var(--good-bg);
+          border: 1px solid rgba(29, 122, 60, 0.2);
+        }
+        .score-pair.old {
+          background: var(--bad-bg);
+          border: 1px solid rgba(182, 59, 59, 0.18);
+        }
+        .score-pair span {
+          font-size: 0.75rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--muted);
+          font-weight: 700;
+        }
+        .score-value {
+          font-size: 1.8rem;
+          font-weight: 700;
+          color: var(--ink);
+        }
+        .score-value.new { color: var(--good); }
+        .score-value.old { color: var(--bad); }
+        .score-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          padding: 0.25rem 0.6rem;
+          border-radius: 999px;
+          font-size: 0.7rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          font-weight: 700;
+        }
+        .score-badge.good { background: var(--good-bg); color: var(--good); }
+        .score-badge.bad { background: var(--bad-bg); color: var(--bad); }
+        .score-badge.neutral { background: var(--neutral-bg); color: var(--neutral); }
+        .card-title {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+        }
+        .delta {
+          margin-top: 0.35rem;
+          font-size: 0.9rem;
+          color: var(--accent);
+          font-weight: 600;
+        }
+        .note {
+          font-size: 0.95rem;
+          color: var(--muted);
+          margin-top: 0.75rem;
+        }
+        .story {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 0 1.5rem 2rem;
+          display: grid;
+          gap: 1.5rem;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        }
+        .story-card {
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 20px;
+          padding: 1.5rem;
+          box-shadow: var(--shadow);
+        }
+        .story-card h3 {
+          margin: 0 0 0.6rem;
+          font-size: 1.1rem;
+        }
+        .story-card ul {
+          margin: 0;
+          padding-left: 1.1rem;
+          color: var(--muted);
+        }
+        .impact {
+          font-size: 1rem;
+          color: var(--muted);
+        }
+        .vitals {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 0 1.5rem 2rem;
+        }
+        .vitals-grid {
+          display: grid;
+          gap: 1rem;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        }
+        .vital {
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 18px;
+          padding: 1rem 1.25rem;
+          box-shadow: var(--shadow);
+        }
+        .vital-label {
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          font-size: 0.75rem;
+          color: var(--muted);
+        }
+        .vital-values {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin: 0.6rem 0 0.4rem;
+        }
+        .vital-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          padding: 0.35rem 0.6rem;
+          border-radius: 999px;
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+        .vital-pill.new {
+          background: var(--good-bg);
+          color: var(--good);
+        }
+        .vital-pill.old {
+          background: var(--bad-bg);
+          color: var(--bad);
+        }
+        .vital-pill strong {
+          text-transform: uppercase;
+          letter-spacing: 0.14em;
+          font-size: 0.65rem;
+        }
+        .vital-delta {
+          font-size: 0.85rem;
+          color: var(--muted);
+        }
+        .delta-good { color: var(--good); font-weight: 600; }
+        .delta-bad { color: var(--bad); font-weight: 600; }
+        .delta-neutral { color: var(--muted); }
+        .controls {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 0 1.5rem 1.5rem;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          align-items: center;
+        }
+        .tab {
+          border: 1px solid var(--border);
+          background: var(--card);
+          color: var(--ink);
+          padding: 0.6rem 1rem;
+          border-radius: 999px;
+          cursor: pointer;
+          font-weight: 600;
+          transition: transform 0.15s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+        .tab:hover { transform: translateY(-1px); border-color: rgba(178,106,58,0.5); color: var(--accent); }
+        .tab.active { background: var(--accent); color: #fff; border-color: transparent; }
+        .panel {
+          max-width: 1100px;
+          margin: 0 auto 2rem;
+          padding: 0 1.5rem 2rem;
+        }
+        .frame {
+          width: 100%;
+          height: 80vh;
+          border: 1px solid var(--border);
+          border-radius: 18px;
+          background: var(--card);
+        }
+      </style>
+    </head>
+    <body>
+      <header>
+        <h1>Lighthouse Comparison</h1>
+        <div class="story-headline">From slow loads to a premium booking experience</div>
+        <p>New site: New site (birch-and-bark-retreats.pages.dev) vs Old site: Old site (www.birchandbarkretreat.com)</p>
+        <div class="meta">Generated Feb 1, 2026, 7:45 PM · Avg score 77 → 90</div>
+      </header>
 
-    <section class="summary">
-      <div class="card">
-        <div class="card-title">
-          <h3>Performance</h3>
-          <span class="score-badge good">+38</span>
-        </div>
-        <div class="score">
-          <span class="score-row">
-            <span class="score-pair new">
-              <span class="score-value new">93</span>
-              <span>new</span>
+      <section class="summary">
+        
+        <div class="card">
+          <div class="card-title">
+            <h3>Performance</h3>
+            <span class="score-badge good">+29</span>
+          </div>
+          <div class="score">
+            <span class="score-row">
+              <span class="score-pair new">
+                <span class="score-value new">93</span>
+                <span>new</span>
+              </span>
+              <span class="score-pair old">
+                <span class="score-value old">64</span>
+                <span>old</span>
+              </span>
             </span>
-            <span class="score-pair old">
-              <span class="score-value old">55</span>
-              <span>old</span>
-            </span>
-          </span>
+          </div>
+          <div class="delta">Up 29 points</div>
         </div>
-        <div class="delta">Speed jumps from mid‑50s to 90s.</div>
-      </div>
-      <div class="card">
-        <div class="card-title">
-          <h3>Accessibility</h3>
-          <span class="score-badge good">+26</span>
-        </div>
-        <div class="score">
-          <span class="score-row">
-            <span class="score-pair new">
-              <span class="score-value new">98</span>
-              <span>new</span>
+      
+        <div class="card">
+          <div class="card-title">
+            <h3>Accessibility</h3>
+            <span class="score-badge good">+26</span>
+          </div>
+          <div class="score">
+            <span class="score-row">
+              <span class="score-pair new">
+                <span class="score-value new">98</span>
+                <span>new</span>
+              </span>
+              <span class="score-pair old">
+                <span class="score-value old">72</span>
+                <span>old</span>
+              </span>
             </span>
-            <span class="score-pair old">
-              <span class="score-value old">72</span>
-              <span>old</span>
-            </span>
-          </span>
+          </div>
+          <div class="delta">Up 26 points</div>
         </div>
-        <div class="delta">Guests on all devices are supported.</div>
-      </div>
-      <div class="card">
-        <div class="card-title">
-          <h3>Best Practices</h3>
-          <span class="score-badge good">+4</span>
-        </div>
-        <div class="score">
-          <span class="score-row">
-            <span class="score-pair new">
-              <span class="score-value new">100</span>
-              <span>new</span>
+      
+        <div class="card">
+          <div class="card-title">
+            <h3>Best Practices</h3>
+            <span class="score-badge good">+4</span>
+          </div>
+          <div class="score">
+            <span class="score-row">
+              <span class="score-pair new">
+                <span class="score-value new">100</span>
+                <span>new</span>
+              </span>
+              <span class="score-pair old">
+                <span class="score-value old">96</span>
+                <span>old</span>
+              </span>
             </span>
-            <span class="score-pair old">
-              <span class="score-value old">96</span>
-              <span>old</span>
-            </span>
-          </span>
+          </div>
+          <div class="delta">Up 4 points</div>
         </div>
-        <div class="delta">Modern build with fewer issues.</div>
-      </div>
-      <div class="card">
-        <div class="card-title">
-          <h3>SEO</h3>
-          <span class="score-badge bad">Staging</span>
-        </div>
-        <div class="score">
-          <span class="score-row">
-            <span class="score-pair new">
-              <span class="score-value new">69</span>
-              <span>new</span>
+      
+        <div class="card">
+          <div class="card-title">
+            <h3>SEO</h3>
+            <span class="score-badge bad">Staging</span>
+          </div>
+          <div class="score">
+            <span class="score-row">
+              <span class="score-pair new">
+                <span class="score-value new">69</span>
+                <span>new</span>
+              </span>
+              <span class="score-pair old">
+                <span class="score-value old">77</span>
+                <span>old</span>
+              </span>
             </span>
-            <span class="score-pair old">
-              <span class="score-value old">77</span>
-              <span>old</span>
-            </span>
-          </span>
+          </div>
+          <p class="note">SEO is lower on the new site because it is in staging mode with noindex. When you go live on the .com domain, this score will rise.</p>
         </div>
-        <p class="note">SEO is lower on the new site because it is in <strong>staging mode</strong> with <code>noindex</code>. When you go live on the .com domain, this score will rise.</p>
-      </div>
-    </section>
+      
+      </section>
 
-    <section class="callout">
-      <div class="callout-card">
-        <h3>Why this matters for bookings</h3>
-        <p>Faster load times and cleaner SEO mean guests reach the booking step sooner, trust the site more, and convert at higher rates. The new site’s speed and accessibility scores are already in the top tier.</p>
-      </div>
-    </section>
+      <section class="vitals">
+        <div class="story-headline">Core Web Vitals snapshot</div>
+        <div class="vitals-grid">
+          
+        <div class="vital">
+          <div class="vital-label">LCP</div>
+          <div class="vital-values">
+            <span class="vital-pill new">2.2 s <strong>new</strong></span>
+            <span class="vital-pill old">5.8 s <strong>old</strong></span>
+          </div>
+          <div class="vital-delta delta-good">3.65s</div>
+        </div>
+      
+        <div class="vital">
+          <div class="vital-label">INP</div>
+          <div class="vital-values">
+            <span class="vital-pill new">— <strong>new</strong></span>
+            <span class="vital-pill old">— <strong>old</strong></span>
+          </div>
+          <div class="vital-delta delta-na">—</div>
+        </div>
+      
+        <div class="vital">
+          <div class="vital-label">CLS</div>
+          <div class="vital-values">
+            <span class="vital-pill new">0 <strong>new</strong></span>
+            <span class="vital-pill old">0 <strong>old</strong></span>
+          </div>
+          <div class="vital-delta delta-neutral">0</div>
+        </div>
+      
+        </div>
+      </section>
 
-    <section class="grid">
-      <div class="card">
-        <h3>Where the current site falls short</h3>
-        <ul>
-          <li>Performance score in the 50s means slower load and higher bounce.</li>
-          <li>Lower accessibility score suggests missing labels/contrast issues.</li>
-          <li>Best Practices and SEO not fully optimized for conversions.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>What the new site fixes</h3>
-        <ul>
-          <li>Much faster, cleaner build (Performance 93).</li>
-          <li>Accessibility almost perfect for guests on any device.</li>
-          <li>Modern metadata + schema ready to flip live.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3>Next step to unlock full SEO</h3>
-        <ul>
-          <li>Move the new site to <strong>birchandbarkretreat.com</strong>.</li>
-          <li>Remove <code>noindex</code> staging flag.</li>
-          <li>Submit the sitemap in Google Search Console.</li>
-        </ul>
-      </div>
-    </section>
+      <section class="story">
+        <div class="story-card">
+          <h3>What was holding bookings back</h3>
+          <ul><li>Slow load times increase bounce and drop bookings.</li><li>Missing labels and contrast issues reduce trust.</li><li>Search visibility and metadata are inconsistent.</li></ul>
+        </div>
+        <div class="story-card">
+          <h3>What the new build fixes</h3>
+          <ul><li>Pages load much faster for guests on mobile.</li><li>Clean labels and contrast support every guest.</li><li>Modern best practices keep the build solid.</li></ul>
+        </div>
+        <div class="story-card">
+          <h3>Why this matters</h3>
+          <p class="impact">Performance jumped by 29 points, which means faster loads and fewer drop-offs.</p>
+          <p class="impact">Faster pages and clearer trust signals move guests to booking sooner.</p>
+        </div>
+      </section>
 
-    <section class="timeline">
-      <div class="step">
-        <div class="step-num">Step 1</div>
-        <h4>Approve the new site</h4>
-        <p>Lock in design, content, and booking flow.</p>
+      <div class="controls">
+        <button class="tab active" data-target="comparison">Comparison</button>
+        <button class="tab" data-target="new">New Site</button>
+        <button class="tab" data-target="old">Old Site</button>
       </div>
-      <div class="step">
-        <div class="step-num">Step 2</div>
-        <h4>Go live on .com</h4>
-        <p>Remove staging noindex and point the domain to Cloudflare Pages.</p>
+
+      <div class="panel">
+        <iframe
+          class="frame"
+          id="reportFrame"
+          src="lighthouse-comparison.html"
+          title="Lighthouse report"
+          loading="lazy"
+        ></iframe>
       </div>
-      <div class="step">
-        <div class="step-num">Step 3</div>
-        <h4>Climb rankings</h4>
-        <p>Submit sitemap and monitor gains in Search Console.</p>
-      </div>
-    </section>
 
-    <div class="controls">
-      <button class="tab active" data-target="comparison">Comparison</button>
-      <button class="tab" data-target="new">New Site</button>
-      <button class="tab" data-target="old">Old Site</button>
-    </div>
+      <script>
+        const tabs = document.querySelectorAll('.tab');
+        const frame = document.getElementById('reportFrame');
+        const sources = {
+          comparison: 'lighthouse-comparison.html',
+          new: 'lighthouse-new.report.html',
+          old: 'lighthouse-old.report.html',
+        };
 
-    <div class="panel">
-      <iframe
-        class="frame"
-        id="reportFrame"
-        src="lighthouse-comparison.html"
-        title="Lighthouse report"
-        loading="lazy"
-      ></iframe>
-      <p class="note">Use the buttons above to toggle between full reports.</p>
-    </div>
-
-    <script>
-      const tabs = document.querySelectorAll('.tab');
-      const frame = document.getElementById('reportFrame');
-      const sources = {
-        comparison: 'lighthouse-comparison.html',
-        new: 'lighthouse-new.report.html',
-        old: 'lighthouse-old.report.html',
-      };
-
-      tabs.forEach((tab) => {
-        tab.addEventListener('click', () => {
-          tabs.forEach((btn) => btn.classList.remove('active'));
-          tab.classList.add('active');
-          const key = tab.getAttribute('data-target');
-          frame.src = sources[key];
+        tabs.forEach((tab) => {
+          tab.addEventListener('click', () => {
+            tabs.forEach((btn) => btn.classList.remove('active'));
+            tab.classList.add('active');
+            const key = tab.getAttribute('data-target');
+            frame.src = sources[key];
+          });
         });
-      });
-    </script>
-  </body>
-</html>
+      </script>
+    </body>
+  </html>
