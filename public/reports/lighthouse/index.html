@@ -62,9 +62,6 @@
           max-width: 1100px;
           margin: 0 auto;
           padding: 0 1.5rem 2rem;
-          display: grid;
-          gap: 1.5rem;
-          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         }
         .card {
           background: var(--card);
@@ -81,79 +78,12 @@
           letter-spacing: 0.12em;
           color: var(--muted);
         }
-        .score {
-          display: grid;
-          gap: 0.75rem;
-          justify-items: center;
-          margin-top: 0.75rem;
-        }
-        .score-row {
-          display: grid;
-          gap: 0.75rem;
-          grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-          width: 100%;
-        }
-        .score-pair {
-          display: grid;
-          gap: 0.2rem;
-          justify-items: center;
-          background: rgba(178, 106, 58, 0.08);
-          border-radius: 16px;
-          padding: 0.6rem 0.9rem;
-          min-width: 110px;
-        }
-        .score-pair.new {
-          background: var(--good-bg);
-          border: 1px solid rgba(29, 122, 60, 0.2);
-        }
-        .score-pair.old {
-          background: var(--bad-bg);
-          border: 1px solid rgba(182, 59, 59, 0.18);
-        }
-        .score-pair span {
-          font-size: 0.75rem;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: var(--muted);
-          font-weight: 700;
-        }
-        .score-value {
-          font-size: 1.8rem;
-          font-weight: 700;
-          color: var(--ink);
-        }
-        .score-value.new { color: var(--good); }
-        .score-value.old { color: var(--bad); }
-        .score-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.35rem;
-          padding: 0.25rem 0.6rem;
-          border-radius: 999px;
-          font-size: 0.7rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          font-weight: 700;
-        }
-        .score-badge.good { background: var(--good-bg); color: var(--good); }
-        .score-badge.bad { background: var(--bad-bg); color: var(--bad); }
-        .score-badge.neutral { background: var(--neutral-bg); color: var(--neutral); }
-        .card-title {
+        .site-context {
           display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-        }
-        .delta {
-          margin-top: 0.35rem;
+          flex-wrap: wrap;
+          gap: 0.75rem 1.5rem;
           font-size: 0.9rem;
-          color: var(--accent);
-          font-weight: 600;
-        }
-        .note {
-          font-size: 0.95rem;
           color: var(--muted);
-          margin-top: 0.75rem;
         }
         .story {
           max-width: 1100px;
@@ -181,62 +111,6 @@
         }
         .impact {
           font-size: 1rem;
-          color: var(--muted);
-        }
-        .vitals {
-          max-width: 1100px;
-          margin: 0 auto;
-          padding: 0 1.5rem 2rem;
-        }
-        .vitals-grid {
-          display: grid;
-          gap: 1rem;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        }
-        .vital {
-          background: var(--card);
-          border: 1px solid var(--border);
-          border-radius: 18px;
-          padding: 1rem 1.25rem;
-          box-shadow: var(--shadow);
-        }
-        .vital-label {
-          font-weight: 700;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          font-size: 0.75rem;
-          color: var(--muted);
-        }
-        .vital-values {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.5rem;
-          margin: 0.6rem 0 0.4rem;
-        }
-        .vital-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.35rem;
-          padding: 0.35rem 0.6rem;
-          border-radius: 999px;
-          font-size: 0.85rem;
-          font-weight: 600;
-        }
-        .vital-pill.new {
-          background: var(--good-bg);
-          color: var(--good);
-        }
-        .vital-pill.old {
-          background: var(--bad-bg);
-          color: var(--bad);
-        }
-        .vital-pill strong {
-          text-transform: uppercase;
-          letter-spacing: 0.14em;
-          font-size: 0.65rem;
-        }
-        .vital-delta {
-          font-size: 0.85rem;
           color: var(--muted);
         }
         .delta-good { color: var(--good); font-weight: 600; }
@@ -288,6 +162,11 @@
           border-color: rgba(182, 59, 59, 0.2);
           color: var(--bad);
         }
+        .site-link.summary {
+          background: rgba(11, 18, 32, 0.06);
+          border-color: rgba(11, 18, 32, 0.12);
+          color: var(--ink);
+        }
         .tab {
           border: 1px solid var(--border);
           background: var(--card);
@@ -318,126 +197,15 @@
       <header>
         <h1>Lighthouse Comparison</h1>
         <div class="story-headline">From slow loads to a premium booking experience</div>
-        <p>New site: New site (birch-and-bark-retreats.pages.dev) vs Old site: Old site (www.birchandbarkretreat.com)</p>
-        <div class="meta">Generated Feb 2, 2026, 8:06 AM · Avg score 75 → 90</div>
+        <p>Side-by-side comparison of the old site and the new site.</p>
+        <div class="meta">Generated Feb 2, 2026, 8:25 AM</div>
       </header>
 
       <section class="summary">
-        
-        <div class="card">
-          <div class="card-title">
-            <h3>Performance</h3>
-            <span class="score-badge good">+36</span>
-          </div>
-          <div class="score">
-            <span class="score-row">
-              <span class="score-pair new">
-                <span class="score-value new">91</span>
-                <span>new</span>
-              </span>
-              <span class="score-pair old">
-                <span class="score-value old">55</span>
-                <span>old</span>
-              </span>
-            </span>
-          </div>
-          <div class="delta">Up 36 points</div>
-        </div>
-      
-        <div class="card">
-          <div class="card-title">
-            <h3>Accessibility</h3>
-            <span class="score-badge good">+26</span>
-          </div>
-          <div class="score">
-            <span class="score-row">
-              <span class="score-pair new">
-                <span class="score-value new">98</span>
-                <span>new</span>
-              </span>
-              <span class="score-pair old">
-                <span class="score-value old">72</span>
-                <span>old</span>
-              </span>
-            </span>
-          </div>
-          <div class="delta">Up 26 points</div>
-        </div>
-      
-        <div class="card">
-          <div class="card-title">
-            <h3>Best Practices</h3>
-            <span class="score-badge good">+4</span>
-          </div>
-          <div class="score">
-            <span class="score-row">
-              <span class="score-pair new">
-                <span class="score-value new">100</span>
-                <span>new</span>
-              </span>
-              <span class="score-pair old">
-                <span class="score-value old">96</span>
-                <span>old</span>
-              </span>
-            </span>
-          </div>
-          <div class="delta">Up 4 points</div>
-        </div>
-      
-        <div class="card">
-          <div class="card-title">
-            <h3>SEO</h3>
-            <span class="score-badge bad">Staging</span>
-          </div>
-          <div class="score">
-            <span class="score-row">
-              <span class="score-pair new">
-                <span class="score-value new">69</span>
-                <span>new</span>
-              </span>
-              <span class="score-pair old">
-                <span class="score-value old">77</span>
-                <span>old</span>
-              </span>
-            </span>
-          </div>
-          <p class="note">SEO is lower on the new site because it is in staging mode with noindex. When you go live on the .com domain, this score will rise.</p>
-        </div>
-      
-      </section>
-
-      <section class="vitals">
-        <div class="story-headline">Core Web Vitals snapshot</div>
-        <div class="vitals-grid">
-          
-        <div class="vital">
-          <div class="vital-label">LCP</div>
-          <div class="vital-values">
-            <span class="vital-pill new">2.8 s <strong>new</strong></span>
-            <span class="vital-pill old">5.8 s <strong>old</strong></span>
-          </div>
-          <div class="vital-delta delta-good">3.04s</div>
-        </div>
-      
-        <div class="vital">
-          <div class="vital-label">INP</div>
-          <div class="vital-values">
-            <span class="vital-pill new">— <strong>new</strong></span>
-            <span class="vital-pill old">— <strong>old</strong></span>
-          </div>
-          <div class="vital-delta delta-na">—</div>
-        </div>
-      
-        <div class="vital">
-          <div class="vital-label">CLS</div>
-          <div class="vital-values">
-            <span class="vital-pill new">0 <strong>new</strong></span>
-            <span class="vital-pill old">0.281 <strong>old</strong></span>
-          </div>
-          <div class="vital-delta delta-good">0.281</div>
-        </div>
-      
-        </div>
+        <div class="site-context">
+        <span><strong>New site:</strong> https://birch-and-bark-retreats.pages.dev/</span>
+        <span><strong>Old site:</strong> https://www.birchandbarkretreat.com/</span>
+      </div>
       </section>
 
       <section class="story">
@@ -447,11 +215,11 @@
         </div>
         <div class="story-card">
           <h3>What the new build fixes</h3>
-          <ul><li>Pages load much faster for guests on mobile.</li><li>Clean labels and contrast support every guest.</li><li>Modern best practices keep the build solid.</li></ul>
+          <ul><li>Clean labels and contrast support every guest.</li><li>Pages load much faster for guests on mobile.</li><li>Modern best practices keep the build solid.</li></ul>
         </div>
         <div class="story-card">
           <h3>Why this matters</h3>
-          <p class="impact">Performance jumped by 36 points, which means faster loads and fewer drop-offs.</p>
+          <p class="impact">Performance jumped by 25 points, which means faster loads and fewer drop-offs.</p>
           <p class="impact">Faster pages and clearer trust signals move guests to booking sooner.</p>
         </div>
       </section>
@@ -460,6 +228,7 @@
       <div class="site-links">
         <a class="site-link new" href="https://birch-and-bark-retreats.pages.dev/" target="_blank" rel="noreferrer">Open new site</a>
         <a class="site-link old" href="https://www.birchandbarkretreat.com/" target="_blank" rel="noreferrer">Open old site</a>
+        <a class="site-link summary" href="lighthouse-new.summary.html">New site summary</a><a class="site-link summary" href="lighthouse-old.summary.html">Old site summary</a>
       </div>
     
 

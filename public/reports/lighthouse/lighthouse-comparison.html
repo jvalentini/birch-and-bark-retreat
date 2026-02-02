@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lighthouse comparison — New site (birch-and-bark-retreats.pages.dev) vs Old site (www.birchandbarkretreat.com)</title>
+  <title>Lighthouse comparison — New site vs Old site</title>
   <style>
     
     @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
@@ -91,6 +91,14 @@
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
+    }
+
+    .site-context {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      color: var(--muted);
+      font-size: 0.92rem;
     }
 
     .chip {
@@ -441,118 +449,18 @@
   <main class="page">
     <header class="hero">
       <div class="eyebrow">Lighthouse Client Report</div>
-      <h1>New site (birch-and-bark-retreats.pages.dev) vs Old site (www.birchandbarkretreat.com)</h1>
-      <p>Category scores, core web vitals, and an executive summary designed for client presentations. Higher category scores are better; lower metric values are better.</p>
+      <h1>New site vs Old site</h1>
+      <p>Category scores and core web metrics designed for client presentations. Higher category scores are better; lower metric values are better.</p>
       <div class="meta-row">
-        <span class="chip">Generated Feb 2, 2026, 8:06 AM</span>
+        <span class="chip">Generated Feb 2, 2026, 8:25 AM</span>
         <span class="chip">Source: Local Lighthouse (Chrome)</span>
         <span class="chip">3 wins · 1 losses</span>
       </div>
+      <div class="site-context">
+        <span><strong>New site:</strong> https://birch-and-bark-retreats.pages.dev/</span>
+        <span><strong>Old site:</strong> https://www.birchandbarkretreat.com/</span>
+      </div>
     </header>
-
-    <section class="summary-grid">
-      
-    <article class="card site-card site-card--new reveal" style="--delay: 0.05s;">
-      <div>
-        <div class="site-label">New site (birch-and-bark-retreats.pages.dev)</div>
-        <div class="site-url">https://birch-and-bark-retreats.pages.dev/</div>
-      </div>
-      <div class="score-ring score-excellent" style="--score: 90;">
-        <div>
-          <span>90</span>
-          <small>overall</small>
-        </div>
-      </div>
-      <div class="score-list">
-        
-          <div class="bar-row">
-            <div>Performance</div>
-            <div class="bar">
-              <span class="bar-fill new" style="--score: 91;"></span>
-            </div>
-            <strong>91</strong>
-          </div>
-          <div class="bar-row">
-            <div>Accessibility</div>
-            <div class="bar">
-              <span class="bar-fill new" style="--score: 98;"></span>
-            </div>
-            <strong>98</strong>
-          </div>
-          <div class="bar-row">
-            <div>Best Practices</div>
-            <div class="bar">
-              <span class="bar-fill new" style="--score: 100;"></span>
-            </div>
-            <strong>100</strong>
-          </div>
-          <div class="bar-row">
-            <div>SEO</div>
-            <div class="bar">
-              <span class="bar-fill new" style="--score: 69;"></span>
-            </div>
-            <strong>69</strong>
-          </div>
-      </div>
-    </article>
-  
-      
-    <article class="card site-card site-card--old reveal" style="--delay: 0.05s;">
-      <div>
-        <div class="site-label">Old site (www.birchandbarkretreat.com)</div>
-        <div class="site-url">https://www.birchandbarkretreat.com/</div>
-      </div>
-      <div class="score-ring score-good" style="--score: 75;">
-        <div>
-          <span>75</span>
-          <small>overall</small>
-        </div>
-      </div>
-      <div class="score-list">
-        
-          <div class="bar-row">
-            <div>Performance</div>
-            <div class="bar">
-              <span class="bar-fill old" style="--score: 55;"></span>
-            </div>
-            <strong>55</strong>
-          </div>
-          <div class="bar-row">
-            <div>Accessibility</div>
-            <div class="bar">
-              <span class="bar-fill old" style="--score: 72;"></span>
-            </div>
-            <strong>72</strong>
-          </div>
-          <div class="bar-row">
-            <div>Best Practices</div>
-            <div class="bar">
-              <span class="bar-fill old" style="--score: 96;"></span>
-            </div>
-            <strong>96</strong>
-          </div>
-          <div class="bar-row">
-            <div>SEO</div>
-            <div class="bar">
-              <span class="bar-fill old" style="--score: 77;"></span>
-            </div>
-            <strong>77</strong>
-          </div>
-      </div>
-    </article>
-  
-      <article class="card delta-card reveal" style="--delay: 0.12s;">
-        <div class="delta-title">Overall change</div>
-        <div class="delta-score delta-good">+15 pts</div>
-        <div class="delta-note">90 vs 75 average score</div>
-        <div class="delta-note">
-          Top gain: Performance (+36 pts)
-        </div>
-        <div class="delta-note">
-          Biggest drop: SEO (-8 pts)
-        </div>
-      </article>
-    </section>
 
     <section class="section">
       <div class="section-heading">
@@ -567,21 +475,21 @@
               <div class="category-detail">Speed and responsiveness</div>
             </div>
             <div class="category-score-row">
-              <span>New site (birch-and-bark-retreats.pages.dev)</span>
-              <span class="score-pill score-excellent">91</span>
+              <span>New site</span>
+              <span class="score-pill score-excellent">93</span>
             </div>
             <div class="bar">
-              <span class="bar-fill new" style="--score: 91;"></span>
+              <span class="bar-fill new" style="--score: 93;"></span>
             </div>
             <div class="category-score-row">
-              <span>Old site (www.birchandbarkretreat.com)</span>
-              <span class="score-pill score-low">55</span>
+              <span>Old site</span>
+              <span class="score-pill score-mid">68</span>
             </div>
             <div class="bar">
-              <span class="bar-fill old" style="--score: 55;"></span>
+              <span class="bar-fill old" style="--score: 68;"></span>
             </div>
             <div class="delta-badge delta-good">
-              Δ +36 pts
+              Δ +25 pts
             </div>
           </article>
           <article class="card category-card reveal" style="--delay: 0.08s;">
@@ -590,14 +498,14 @@
               <div class="category-detail">Inclusive UX and usability</div>
             </div>
             <div class="category-score-row">
-              <span>New site (birch-and-bark-retreats.pages.dev)</span>
+              <span>New site</span>
               <span class="score-pill score-excellent">98</span>
             </div>
             <div class="bar">
               <span class="bar-fill new" style="--score: 98;"></span>
             </div>
             <div class="category-score-row">
-              <span>Old site (www.birchandbarkretreat.com)</span>
+              <span>Old site</span>
               <span class="score-pill score-mid">72</span>
             </div>
             <div class="bar">
@@ -613,14 +521,14 @@
               <div class="category-detail">Security and stability</div>
             </div>
             <div class="category-score-row">
-              <span>New site (birch-and-bark-retreats.pages.dev)</span>
+              <span>New site</span>
               <span class="score-pill score-excellent">100</span>
             </div>
             <div class="bar">
               <span class="bar-fill new" style="--score: 100;"></span>
             </div>
             <div class="category-score-row">
-              <span>Old site (www.birchandbarkretreat.com)</span>
+              <span>Old site</span>
               <span class="score-pill score-excellent">96</span>
             </div>
             <div class="bar">
@@ -636,14 +544,14 @@
               <div class="category-detail">Search visibility</div>
             </div>
             <div class="category-score-row">
-              <span>New site (birch-and-bark-retreats.pages.dev)</span>
+              <span>New site</span>
               <span class="score-pill score-mid">69</span>
             </div>
             <div class="bar">
               <span class="bar-fill new" style="--score: 69;"></span>
             </div>
             <div class="category-score-row">
-              <span>Old site (www.birchandbarkretreat.com)</span>
+              <span>Old site</span>
               <span class="score-pill score-good">77</span>
             </div>
             <div class="bar">
@@ -664,47 +572,63 @@
       <div class="metrics-grid">
         
           <article class="card metric-card reveal" style="--delay: 0.1s;">
-            <div class="metric-title">Largest Contentful Paint <span class="chip">LCP</span></div>
+            <div class="metric-title">Largest Contentful Paint</div>
             <div class="metric-values">
               <div>
-                <span>New site (birch-and-bark-retreats.pages.dev)</span>
-                <strong>2.8 s</strong>
+                <span>New site</span>
+                <strong>2.2 s</strong>
               </div>
               <div>
-                <span>Old site (www.birchandbarkretreat.com)</span>
-                <strong>5.8 s</strong>
+                <span>Old site</span>
+                <strong>6.0 s</strong>
               </div>
             </div>
             <div class="delta-badge delta-good">
-              Δ 3.04s · Improved
+              Δ 3.81s · Improved
             </div>
           </article>
           <article class="card metric-card reveal" style="--delay: 0.1s;">
-            <div class="metric-title">First Contentful Paint <span class="chip">FCP</span></div>
+            <div class="metric-title">First Contentful Paint</div>
             <div class="metric-values">
               <div>
-                <span>New site (birch-and-bark-retreats.pages.dev)</span>
-                <strong>2.7 s</strong>
+                <span>New site</span>
+                <strong>2.0 s</strong>
               </div>
               <div>
-                <span>Old site (www.birchandbarkretreat.com)</span>
-                <strong>4.0 s</strong>
+                <span>Old site</span>
+                <strong>4.1 s</strong>
               </div>
             </div>
             <div class="delta-badge delta-good">
-              Δ 1.26s · Improved
+              Δ 2.06s · Improved
             </div>
           </article>
           <article class="card metric-card reveal" style="--delay: 0.1s;">
-            <div class="metric-title">Total Blocking Time <span class="chip">TBT</span></div>
+            <div class="metric-title">Total Blocking Time</div>
             <div class="metric-values">
               <div>
-                <span>New site (birch-and-bark-retreats.pages.dev)</span>
-                <strong>0 ms</strong>
+                <span>New site</span>
+                <strong>220 ms</strong>
               </div>
               <div>
-                <span>Old site (www.birchandbarkretreat.com)</span>
-                <strong>0 ms</strong>
+                <span>Old site</span>
+                <strong>30 ms</strong>
+              </div>
+            </div>
+            <div class="delta-badge delta-bad">
+              Δ +188ms · Regressed
+            </div>
+          </article>
+          <article class="card metric-card reveal" style="--delay: 0.1s;">
+            <div class="metric-title">Cumulative Layout Shift</div>
+            <div class="metric-values">
+              <div>
+                <span>New site</span>
+                <strong>0</strong>
+              </div>
+              <div>
+                <span>Old site</span>
+                <strong>0</strong>
               </div>
             </div>
             <div class="delta-badge delta-neutral">
@@ -712,63 +636,21 @@
             </div>
           </article>
           <article class="card metric-card reveal" style="--delay: 0.1s;">
-            <div class="metric-title">Cumulative Layout Shift <span class="chip">CLS</span></div>
+            <div class="metric-title">Speed Index</div>
             <div class="metric-values">
               <div>
-                <span>New site (birch-and-bark-retreats.pages.dev)</span>
-                <strong>0</strong>
+                <span>New site</span>
+                <strong>2.0 s</strong>
               </div>
               <div>
-                <span>Old site (www.birchandbarkretreat.com)</span>
-                <strong>0.281</strong>
+                <span>Old site</span>
+                <strong>4.5 s</strong>
               </div>
             </div>
             <div class="delta-badge delta-good">
-              Δ 0.281 · Improved
+              Δ 2.48s · Improved
             </div>
           </article>
-          <article class="card metric-card reveal" style="--delay: 0.1s;">
-            <div class="metric-title">Speed Index <span class="chip">SI</span></div>
-            <div class="metric-values">
-              <div>
-                <span>New site (birch-and-bark-retreats.pages.dev)</span>
-                <strong>2.7 s</strong>
-              </div>
-              <div>
-                <span>Old site (www.birchandbarkretreat.com)</span>
-                <strong>4.0 s</strong>
-              </div>
-            </div>
-            <div class="delta-badge delta-good">
-              Δ 1.26s · Improved
-            </div>
-          </article>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-heading">
-        <h2>Shareable assets</h2>
-        <p>Client-ready summaries and detailed Lighthouse exports.</p>
-      </div>
-      <div class="link-grid">
-        
-          <a class="link-button" href="lighthouse-new.summary.html">
-            Client-ready summary — New site
-            <small>Shareable snapshot</small>
-          </a>
-          <a class="link-button" href="lighthouse-old.summary.html">
-            Client-ready summary — Old site
-            <small>Shareable snapshot</small>
-          </a>
-          <a class="link-button" href="lighthouse-new.report.html">
-            Full Lighthouse report — New site
-            <small>Detailed audit output</small>
-          </a>
-          <a class="link-button" href="lighthouse-old.report.html">
-            Full Lighthouse report — Old site
-            <small>Detailed audit output</small>
-          </a>
       </div>
     </section>
 
