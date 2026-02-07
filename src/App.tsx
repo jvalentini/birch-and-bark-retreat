@@ -1167,8 +1167,8 @@ function HomePage({ onOpenBooking }: { onOpenBooking: () => void }) {
               </p>
             </div>
             <div className="flex flex-wrap gap-4">
-              <Button size="lg" asChild>
-                <a href="/book">Check Availability</a>
+              <Button size="lg" onClick={onOpenBooking}>
+                Check Availability
               </Button>
               <Button variant="outline" size="lg" asChild>
                 <a href="tel:+15189291422">Call (518) 929-1422</a>
@@ -1921,11 +1921,22 @@ export default function App() {
             ))}
           </nav>
           <div className="flex items-center gap-3">
-            <Button asChild size="lg" className="hidden sm:inline-flex">
-              <a href="/book">Book Now</a>
+            <Button
+              size="lg"
+              className="hidden sm:inline-flex"
+              onClick={() => setBookingModalOpen(true)}
+            >
+              Book Now
             </Button>
-            <Button asChild size="sm" className="sm:hidden">
-              <a href="/book">Book</a>
+            <Button
+              size="sm"
+              className="sm:hidden"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setBookingModalOpen(true);
+              }}
+            >
+              Book
             </Button>
             <button
               type="button"
