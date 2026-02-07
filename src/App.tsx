@@ -57,7 +57,7 @@ const stats = [
   { label: 'Sleeps', value: '10' },
   { label: 'Bedrooms', value: '3 + kids room' },
   { label: 'Bathrooms', value: '2' },
-  { label: 'Acreage', value: '11 wooded acres' },
+  { label: 'Acres', value: '11 private' },
 ];
 
 const highlights = [
@@ -514,7 +514,27 @@ const reviewSummary = {
   highlight: '10/10',
 };
 
+const cancellationPolicySummary = [
+  '100% refund if canceled more than 28 days before arrival',
+  '50% refund if canceled more than 14 days before arrival',
+  'No refund within 14 days of arrival',
+];
+
+const reviewHighlightBadges = [
+  'Family-ready',
+  'Dog-friendly',
+  'EV charging',
+  'Indoor spa',
+  'Rec room',
+];
+
 const originQuery = '1725 Abbey Rd Petoskey MI 49770';
+
+const pushAnalyticsEvent = (event: string, payload: Record<string, unknown> = {}) => {
+  const win = window as Window & { dataLayer?: Record<string, unknown>[] };
+  if (!Array.isArray(win.dataLayer)) return;
+  win.dataLayer.push({ event, ...payload });
+};
 
 const buildDirectionsUrl = (destination: string) => {
   const params = new URLSearchParams({
@@ -614,7 +634,17 @@ const ownerRezWidgets = {
   },
 } as const;
 
-function OwnerRezWidget({ widgetType, widgetId }: { widgetType: string; widgetId: string }) {
+function OwnerRezWidget({
+  widgetType,
+  widgetId,
+  onLoaded,
+}: {
+  widgetType: string;
+  widgetId: string;
+  onLoaded?: () => void;
+}) {
+  const widgetRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (document.querySelector('script[data-ownerrez-widget]')) return;
     const script = document.createElement('script');
@@ -624,8 +654,30 @@ function OwnerRezWidget({ widgetType, widgetId }: { widgetType: string; widgetId
     document.body.appendChild(script);
   }, []);
 
+  useEffect(() => {
+    if (!onLoaded || !widgetRef.current) return;
+
+    const iframe = widgetRef.current.querySelector('iframe');
+    if (iframe) {
+      onLoaded();
+      return;
+    }
+
+    const observer = new MutationObserver(() => {
+      const mountedIframe = widgetRef.current?.querySelector('iframe');
+      if (mountedIframe) {
+        observer.disconnect();
+        onLoaded();
+      }
+    });
+
+    observer.observe(widgetRef.current, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [onLoaded]);
+
   return (
     <div
+      ref={widgetRef}
       className="ownerrez-widget"
       data-propertyId={propertyId}
       data-widget-type={widgetType}
@@ -1072,7 +1124,13 @@ function MediaCarousel({
   );
 }
 
-function StickyBookingBar({ visible, onOpenBooking }: { visible: boolean; onOpenBooking: () => void }) {
+function StickyBookingBar({
+  visible,
+  onOpenBooking,
+}: {
+  visible: boolean;
+  onOpenBooking: (source: string) => void;
+}) {
   if (!visible) return null;
 
   return (
@@ -1088,7 +1146,7 @@ function StickyBookingBar({ visible, onOpenBooking }: { visible: boolean; onOpen
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button size="sm" onClick={onOpenBooking}>
+            <Button size="sm" onClick={() => onOpenBooking('sticky_booking_bar')}>
               Check availability
             </Button>
             <Button size="sm" variant="outline" asChild>
@@ -1122,7 +1180,20 @@ function BookingWidgetModal({ open, onClose }: { open: boolean; onClose: () => v
         <CardHeader className="flex-row items-start justify-between space-y-0 pb-3">
           <div>
             <CardTitle className="text-2xl">Check Availability</CardTitle>
-            <CardDescription>Live pricing and instant booking powered by OwnerRez.</CardDescription>
+            <CardDescription>
+              Live dynamic pricing from PriceLabs with secure checkout in OwnerRez.
+            </CardDescription>
+            <div className="mt-3 flex flex-wrap gap-2 text-xs">
+              <span className="rounded-full border border-sand-200/80 bg-sand-100 px-3 py-1 font-semibold uppercase tracking-[0.12em] text-pine-700">
+                Best rate direct
+              </span>
+              <span className="rounded-full border border-sand-200/80 bg-sand-100 px-3 py-1 font-semibold uppercase tracking-[0.12em] text-pine-700">
+                Secure checkout
+              </span>
+              <span className="rounded-full border border-sand-200/80 bg-sand-100 px-3 py-1 font-semibold uppercase tracking-[0.12em] text-pine-700">
+                Instant confirmation
+              </span>
+            </div>
           </div>
           <button
             type="button"
@@ -1133,10 +1204,26 @@ function BookingWidgetModal({ open, onClose }: { open: boolean; onClose: () => v
             Close
           </button>
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="space-y-3 pt-0">
+          <div className="rounded-2xl border border-sand-200/80 bg-sand-100/85 p-4 text-sm text-pine-700">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-pine-600">
+              Cancellation policy
+            </p>
+            <div className="space-y-1">
+              {cancellationPolicySummary.map((item) => (
+                <p key={item} className="flex items-start gap-2">
+                  <span className="mt-1 text-ember-600">●</span>
+                  <span>{item}</span>
+                </p>
+              ))}
+            </div>
+          </div>
           <OwnerRezWidget
             widgetType={ownerRezWidgets.booking.type}
             widgetId={ownerRezWidgets.booking.id}
+            onLoaded={() => {
+              pushAnalyticsEvent('booking_widget_loaded', { placement: 'booking_modal' });
+            }}
           />
         </CardContent>
       </Card>
@@ -1144,7 +1231,7 @@ function BookingWidgetModal({ open, onClose }: { open: boolean; onClose: () => v
   );
 }
 
-function HomePage({ onOpenBooking }: { onOpenBooking: () => void }) {
+function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }) {
   return (
     <>
       <section id="overview" className="relative pb-16 pt-14">
@@ -1167,12 +1254,23 @@ function HomePage({ onOpenBooking }: { onOpenBooking: () => void }) {
               </p>
             </div>
             <div className="flex flex-wrap gap-4">
-              <Button size="lg" onClick={onOpenBooking}>
+              <Button size="lg" onClick={() => onOpenBooking('hero_primary_cta')}>
                 Check Availability
               </Button>
               <Button variant="outline" size="lg" asChild>
                 <a href="tel:+15189291422">Call (518) 929-1422</a>
               </Button>
+            </div>
+            <div className="flex flex-wrap gap-2 text-xs">
+              <span className="rounded-full border border-sand-200/80 bg-sand-100 px-3 py-1 font-semibold uppercase tracking-[0.12em] text-pine-700">
+                Best rate direct
+              </span>
+              <span className="rounded-full border border-sand-200/80 bg-sand-100 px-3 py-1 font-semibold uppercase tracking-[0.12em] text-pine-700">
+                Secure checkout
+              </span>
+              <span className="rounded-full border border-sand-200/80 bg-sand-100 px-3 py-1 font-semibold uppercase tracking-[0.12em] text-pine-700">
+                100% refund 28+ days
+              </span>
             </div>
             <div className="flex flex-wrap items-center gap-4 text-sm text-pine-600 sm:gap-6">
               <span>Family-ready · Dog-friendly · EV charging</span>
@@ -1247,17 +1345,22 @@ function HomePage({ onOpenBooking }: { onOpenBooking: () => void }) {
                     {reviewSummary.count} verified reviews
                   </span>
                 </div>
+                <a
+                  href="#testimonials"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-ember-600 transition hover:text-ember-500"
+                >
+                  Read recent guest reviews <span aria-hidden="true">→</span>
+                </a>
               </div>
               <div className="flex flex-wrap gap-3 text-sm text-pine-600">
-                <span className="rounded-full border border-sand-200/70 bg-sand-50 px-4 py-2">
-                  Family-ready
-                </span>
-                <span className="rounded-full border border-sand-200/70 bg-sand-50 px-4 py-2">
-                  Dog-friendly
-                </span>
-                <span className="rounded-full border border-sand-200/70 bg-sand-50 px-4 py-2">
-                  EV charging
-                </span>
+                {reviewHighlightBadges.map((badge) => (
+                  <span
+                    key={badge}
+                    className="rounded-full border border-sand-200/70 bg-sand-50 px-4 py-2"
+                  >
+                    {badge}
+                  </span>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -1856,7 +1959,7 @@ function CallToAction() {
   );
 }
 
-function getPage(pathname: string, onOpenBooking: () => void) {
+function getPage(pathname: string, onOpenBooking: (source: string) => void) {
   if (pathname === '/photos') return <PhotosPage />;
   if (pathname === '/availability') return <AvailabilityPage />;
   if (pathname === '/reviews') return <ReviewsPage />;
@@ -1870,6 +1973,12 @@ export default function App() {
   const [showSticky, setShowSticky] = useState(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const pathname = useMemo(() => window.location.pathname, []);
+
+  const openBookingModal = (source: string) => {
+    pushAnalyticsEvent('cta_click', { cta: 'open_booking_modal', source, page: pathname });
+    pushAnalyticsEvent('booking_modal_open', { source, page: pathname });
+    setBookingModalOpen(true);
+  };
 
   useEffect(() => {
     if (pathname === '/book') {
@@ -1921,11 +2030,7 @@ export default function App() {
             ))}
           </nav>
           <div className="flex items-center gap-3">
-            <Button
-              size="lg"
-              className="hidden sm:inline-flex"
-              onClick={() => setBookingModalOpen(true)}
-            >
+            <Button size="lg" className="hidden sm:inline-flex" onClick={() => openBookingModal('header_book_now')}>
               Book Now
             </Button>
             <Button
@@ -1933,7 +2038,7 @@ export default function App() {
               className="sm:hidden"
               onClick={() => {
                 setMobileMenuOpen(false);
-                setBookingModalOpen(true);
+                openBookingModal('header_mobile_book');
               }}
             >
               Book
@@ -1997,12 +2102,18 @@ export default function App() {
       </header>
 
       <main>
-        {getPage(pathname, () => setBookingModalOpen(true))}
+        {getPage(pathname, openBookingModal)}
         <CallToAction />
       </main>
 
-      <StickyBookingBar visible={showSticky} onOpenBooking={() => setBookingModalOpen(true)} />
-      <BookingWidgetModal open={bookingModalOpen} onClose={() => setBookingModalOpen(false)} />
+      <StickyBookingBar visible={showSticky} onOpenBooking={openBookingModal} />
+      <BookingWidgetModal
+        open={bookingModalOpen}
+        onClose={() => {
+          pushAnalyticsEvent('booking_modal_close', { page: pathname });
+          setBookingModalOpen(false);
+        }}
+      />
 
       <footer className="border-t border-sand-200/70 bg-sand-50/90">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-8 text-sm text-pine-600 sm:flex-row sm:items-center sm:justify-between">
