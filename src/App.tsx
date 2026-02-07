@@ -593,15 +593,15 @@ const propertyId = '54ec4ac58c9e46819568b6c64bc2898c';
 const ownerRezWidgets = {
   availability: {
     type: 'Multiple Month Calendar',
-    id: '6d4b5d4d84bb48b6a12368156e3012ab',
+    id: '04dcb6fd4cb94ca698ad7bfd732fcefe',
   },
   reviews: {
     type: 'Reviews',
-    id: 'a8166e41c5614e0080fe603ec271ed70',
+    id: 'a6cc97f1734f4cbdb357bcbfab148cb3',
   },
   booking: {
     type: 'Booking/Inquiry',
-    id: '0137563f91af4bdaadf39e72d8965c04',
+    id: '7796fd628779474199080ddf40553fd4',
   },
 } as const;
 
