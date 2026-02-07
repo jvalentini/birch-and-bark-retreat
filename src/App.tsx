@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   IconBalcony,
   IconBath,
@@ -499,6 +499,14 @@ const reviews = [
     quote: 'Great home for families. Everything you need is there. I will be booking again!',
     response: 'Thanks Dawn and we look forward to having you up again!',
   },
+  {
+    name: 'Bradley M',
+    stay: 'Nov 2025',
+    rating: 5.0,
+    quote:
+      'Perfect long weekend spot. The house was spotless, the kitchen had everything we needed, and the kids were obsessed with the game room. Great location with easy drives to town and trails.',
+    response: 'Thanks Bradley! Happy to hear the whole family had a great stay.',
+  },
 ];
 
 const reviewSummary = {
@@ -510,6 +518,7 @@ const originQuery = '1725 Abbey Rd Petoskey MI 49770';
 
 const buildDirectionsUrl = (destination: string) => {
   const params = new URLSearchParams({
+    api: '1',
     origin: originQuery,
     destination,
     travelmode: 'driving',
@@ -641,6 +650,23 @@ function BookingPanel({ compact = false }: { compact?: boolean }) {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guests, setGuests] = useState('4');
+  const checkInInputRef = useRef<HTMLInputElement>(null);
+  const checkOutInputRef = useRef<HTMLInputElement>(null);
+  const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+  const minCheckout = checkIn || today;
+
+  useEffect(() => {
+    if (checkIn && checkOut && checkOut <= checkIn) setCheckOut('');
+  }, [checkIn, checkOut]);
+
+  const openDatePicker = (input: HTMLInputElement | null) => {
+    if (!input) return;
+    if ('showPicker' in input) {
+      input.showPicker();
+      return;
+    }
+    input.focus();
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -652,33 +678,86 @@ function BookingPanel({ compact = false }: { compact?: boolean }) {
   };
 
   return (
-    <Card className={compact ? 'bg-sand-100/90' : ''}>
-      <CardContent className={compact ? 'p-4' : 'pt-6'}>
-        <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-3">
-          <label className="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-pine-500">
-            Check in
-            <input
-              type="date"
-              value={checkIn}
-              onChange={(event) => setCheckIn(event.target.value)}
-              className="rounded-2xl border border-sand-200/80 bg-sand-50 px-3 py-2 text-sm font-semibold text-pine-800"
-            />
+    <Card
+      className={
+        compact
+          ? 'booking-panel bg-sand-100/90'
+          : 'booking-panel border-pine-900/10 bg-gradient-to-br from-sand-100 via-sand-50 to-sand-100/90 shadow-[0_26px_55px_rgba(29,37,31,0.18)]'
+      }
+    >
+      <CardContent className={compact ? 'p-4' : 'p-6'}>
+        {!compact && (
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-pine-500">
+                Plan Your Stay
+              </p>
+              <p className="mt-1 text-sm text-pine-700">
+                Pick your dates to see live pricing and instant availability.
+              </p>
+            </div>
+            <div className="rounded-full border border-ember-500/25 bg-ember-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-ember-600">
+              Real-time calendar
+            </div>
+          </div>
+        )}
+        <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-6">
+          <label className="sm:col-span-2">
+            <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-pine-500">
+              Check in
+            </span>
+            <button
+              type="button"
+              onClick={() => openDatePicker(checkInInputRef.current)}
+              className="group relative w-full"
+              aria-label="Open check-in date picker"
+            >
+              <input
+                ref={checkInInputRef}
+                type="date"
+                min={today}
+                value={checkIn}
+                onChange={(event) => setCheckIn(event.target.value)}
+                className="booking-date-input h-12 w-full rounded-2xl border border-sand-200/90 bg-sand-50 pr-11 pl-3 text-sm font-semibold text-pine-900 transition group-hover:border-ember-500/45 focus:border-ember-500 focus:outline-none focus:ring-4 focus:ring-ember-500/20"
+              />
+              <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-lg text-ember-600">
+                &#128197;
+              </span>
+            </button>
           </label>
-          <label className="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-pine-500">
-            Check out
-            <input
-              type="date"
-              value={checkOut}
-              onChange={(event) => setCheckOut(event.target.value)}
-              className="rounded-2xl border border-sand-200/80 bg-sand-50 px-3 py-2 text-sm font-semibold text-pine-800"
-            />
+
+          <label className="sm:col-span-2">
+            <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-pine-500">
+              Check out
+            </span>
+            <button
+              type="button"
+              onClick={() => openDatePicker(checkOutInputRef.current)}
+              className="group relative w-full"
+              aria-label="Open check-out date picker"
+            >
+              <input
+                ref={checkOutInputRef}
+                type="date"
+                min={minCheckout}
+                value={checkOut}
+                onChange={(event) => setCheckOut(event.target.value)}
+                className="booking-date-input h-12 w-full rounded-2xl border border-sand-200/90 bg-sand-50 pr-11 pl-3 text-sm font-semibold text-pine-900 transition group-hover:border-ember-500/45 focus:border-ember-500 focus:outline-none focus:ring-4 focus:ring-ember-500/20"
+              />
+              <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-lg text-ember-600">
+                &#128197;
+              </span>
+            </button>
           </label>
-          <label className="flex flex-col gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-pine-500">
-            Guests
+
+          <label className="sm:col-span-2">
+            <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-pine-500">
+              Guests
+            </span>
             <select
               value={guests}
               onChange={(event) => setGuests(event.target.value)}
-              className="rounded-2xl border border-sand-200/80 bg-sand-50 px-3 py-2 text-sm font-semibold text-pine-800"
+              className="h-12 w-full rounded-2xl border border-sand-200/90 bg-sand-50 px-3 text-sm font-semibold text-pine-900 transition hover:border-ember-500/45 focus:border-ember-500 focus:outline-none focus:ring-4 focus:ring-ember-500/20"
             >
               {['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].map((count) => (
                 <option key={count} value={count}>
@@ -687,7 +766,8 @@ function BookingPanel({ compact = false }: { compact?: boolean }) {
               ))}
             </select>
           </label>
-          <div className="sm:col-span-3">
+
+          <div className="sm:col-span-6">
             <Button size={compact ? 'default' : 'lg'} className="w-full" type="submit">
               Check availability
             </Button>
@@ -992,7 +1072,7 @@ function MediaCarousel({
   );
 }
 
-function StickyBookingBar({ visible }: { visible: boolean }) {
+function StickyBookingBar({ visible, onOpenBooking }: { visible: boolean; onOpenBooking: () => void }) {
   if (!visible) return null;
 
   return (
@@ -1008,8 +1088,8 @@ function StickyBookingBar({ visible }: { visible: boolean }) {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button size="sm" asChild>
-              <a href="/book">Check availability</a>
+            <Button size="sm" onClick={onOpenBooking}>
+              Check availability
             </Button>
             <Button size="sm" variant="outline" asChild>
               <a href="tel:+15189291422">Call host</a>
@@ -1021,7 +1101,50 @@ function StickyBookingBar({ visible }: { visible: boolean }) {
   );
 }
 
-function HomePage() {
+function BookingWidgetModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-pine-900/75 p-4">
+      <div className="absolute inset-0" onClick={onClose} aria-hidden="true" />
+      <Card className="relative z-10 max-h-[85vh] w-full max-w-5xl overflow-y-auto border-pine-900/10 bg-sand-50">
+        <CardHeader className="flex-row items-start justify-between space-y-0 pb-3">
+          <div>
+            <CardTitle className="text-2xl">Check Availability</CardTitle>
+            <CardDescription>Live pricing and instant booking powered by OwnerRez.</CardDescription>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full border border-sand-200 bg-sand-100 px-3 py-1 text-sm font-semibold text-pine-700 hover:bg-sand-200"
+            aria-label="Close availability dialog"
+          >
+            Close
+          </button>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <OwnerRezWidget
+            widgetType={ownerRezWidgets.booking.type}
+            widgetId={ownerRezWidgets.booking.id}
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function HomePage({ onOpenBooking }: { onOpenBooking: () => void }) {
   return (
     <>
       <section id="overview" className="relative pb-16 pt-14">
@@ -1070,7 +1193,7 @@ function HomePage() {
                   loop
                   playsInline
                   preload="metadata"
-                  poster="/images/living-room.jpg"
+                  poster="/images/great-room.jpg"
                 >
                   <source src="/living-room.mp4" type="video/mp4" />
                 </video>
@@ -1092,7 +1215,6 @@ function HomePage() {
                 />
               </div>
             </div>
-            <BookingPanel />
           </div>
         </div>
         <div className="mx-auto mt-14 grid w-full max-w-6xl gap-4 px-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -1734,18 +1856,19 @@ function CallToAction() {
   );
 }
 
-function getPage(pathname: string) {
+function getPage(pathname: string, onOpenBooking: () => void) {
   if (pathname === '/photos') return <PhotosPage />;
   if (pathname === '/availability') return <AvailabilityPage />;
   if (pathname === '/reviews') return <ReviewsPage />;
   if (pathname === '/book') return <BookPage />;
   if (pathname === '/location') return <LocationPage />;
-  return <HomePage />;
+  return <HomePage onOpenBooking={onOpenBooking} />;
 }
 
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSticky, setShowSticky] = useState(false);
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const pathname = useMemo(() => window.location.pathname, []);
 
   useEffect(() => {
@@ -1762,6 +1885,13 @@ export default function App() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = bookingModalOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [bookingModalOpen]);
 
   return (
     <div className="relative overflow-hidden bg-hero-mist">
@@ -1856,11 +1986,12 @@ export default function App() {
       </header>
 
       <main>
-        {getPage(pathname)}
+        {getPage(pathname, () => setBookingModalOpen(true))}
         <CallToAction />
       </main>
 
-      <StickyBookingBar visible={showSticky} />
+      <StickyBookingBar visible={showSticky} onOpenBooking={() => setBookingModalOpen(true)} />
+      <BookingWidgetModal open={bookingModalOpen} onClose={() => setBookingModalOpen(false)} />
 
       <footer className="border-t border-sand-200/70 bg-sand-50/90">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-8 text-sm text-pine-600 sm:flex-row sm:items-center sm:justify-between">

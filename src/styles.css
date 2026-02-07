@@ -55,6 +55,32 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  .booking-panel .booking-date-input {
+    color-scheme: light;
+    accent-color: #c48252;
+  }
+
+  .booking-panel .booking-date-input::-webkit-inner-spin-button {
+    display: none;
+  }
+
+  .booking-panel .booking-date-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    border-radius: 999px;
+    padding: 0.25rem;
+    background: rgba(196, 130, 82, 0.15);
+    filter: saturate(0.8);
+  }
+
+  .booking-panel .booking-date-input::-webkit-datetime-edit {
+    color: #1d251f;
+    letter-spacing: 0.02em;
+  }
+
+  .booking-panel .booking-date-input:focus::-webkit-calendar-picker-indicator {
+    background: rgba(196, 130, 82, 0.28);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
