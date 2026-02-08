@@ -35,6 +35,36 @@ type MediaImage = {
   alt: string;
 };
 
+const responsiveImageWidths = [360, 540, 768, 960, 1280, 1600, 1920];
+const defaultImageQuality = 72;
+let nextMainImageSequence = 0;
+const readyMainImageSequences = new Set<number>();
+const mainImageSubscribers = new Map<number, Set<() => void>>();
+const mainImageQueue: { sequence: number; src: string }[] = [];
+let isMainImageQueueRunning = false;
+
+const isMainImageReady = (sequence: number) => readyMainImageSequences.has(sequence);
+
+const subscribeMainImageReady = (sequence: number, callback: () => void) => {
+  const listeners = mainImageSubscribers.get(sequence) ?? new Set<() => void>();
+  listeners.add(callback);
+  mainImageSubscribers.set(sequence, listeners);
+  return () => {
+    const current = mainImageSubscribers.get(sequence);
+    if (!current) return;
+    current.delete(callback);
+    if (current.size === 0) mainImageSubscribers.delete(sequence);
+  };
+};
+
+const markMainImageReady = (sequence: number) => {
+  readyMainImageSequences.add(sequence);
+  const listeners = mainImageSubscribers.get(sequence);
+  if (!listeners) return;
+  listeners.forEach((listener) => listener());
+  mainImageSubscribers.delete(sequence);
+};
+
 const shuffleImages = <T,>(items: T[]) => {
   const array = [...items];
   for (let index = array.length - 1; index > 0; index -= 1) {
@@ -141,10 +171,6 @@ const galleryBase = [
   {
     src: '/images/kitchen-zoom-out.jpg',
     alt: 'Kitchen wide angle',
-  },
-  {
-    src: '/images/kitchen-sink.webp',
-    alt: 'Kitchen sink and finishes',
   },
   {
     src: '/images/dining-table.jpg',
@@ -546,6 +572,97 @@ const buildDirectionsUrl = (destination: string) => {
   return `https://www.google.com/maps/dir/?${params.toString()}`;
 };
 
+const canUseCloudflareImageResizing = (src: string) => {
+  if (import.meta.env.DEV || !src.startsWith('/images/')) return false;
+  if (typeof window === 'undefined') return true;
+  return !window.location.hostname.endsWith('.pages.dev');
+};
+
+const getOptimizedImageSrc = (
+  src: string,
+  width: number,
+  quality = defaultImageQuality
+) => {
+  if (!canUseCloudflareImageResizing(src)) return src;
+  return `/cdn-cgi/image/format=auto,quality=${quality},width=${width}${src}`;
+};
+
+const runMainImageQueue = () => {
+  if (isMainImageQueueRunning) return;
+  const next = mainImageQueue.shift();
+  if (!next) return;
+  if (isMainImageReady(next.sequence)) {
+    runMainImageQueue();
+    return;
+  }
+
+  isMainImageQueueRunning = true;
+  const preloader = new Image();
+  preloader.decoding = 'async';
+  preloader.src = getOptimizedImageSrc(next.src, 960);
+
+  const finalize = () => {
+    markMainImageReady(next.sequence);
+    isMainImageQueueRunning = false;
+    runMainImageQueue();
+  };
+
+  preloader.onload = finalize;
+  preloader.onerror = finalize;
+};
+
+const enqueueMainImage = (sequence: number, src: string) => {
+  if (isMainImageReady(sequence)) return;
+  if (!mainImageQueue.some((item) => item.sequence === sequence)) {
+    mainImageQueue.push({ sequence, src });
+  }
+  runMainImageQueue();
+};
+
+function ResponsiveImage({
+  src,
+  alt,
+  className,
+  loading = 'lazy',
+  fetchPriority,
+  sizes = '100vw',
+  widths = responsiveImageWidths,
+  quality = defaultImageQuality,
+  decoding = 'async',
+  onLoad,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+  loading?: 'lazy' | 'eager';
+  fetchPriority?: 'high' | 'low' | 'auto';
+  sizes?: string;
+  widths?: number[];
+  quality?: number;
+  decoding?: 'async' | 'sync' | 'auto';
+  onLoad?: React.ReactEventHandler<HTMLImageElement>;
+}) {
+  const defaultWidth = widths[widths.length - 1] ?? 1280;
+  const imgSrc = getOptimizedImageSrc(src, defaultWidth, quality);
+  const srcSet = canUseCloudflareImageResizing(src)
+    ? widths.map((width) => `${getOptimizedImageSrc(src, width, quality)} ${width}w`).join(', ')
+    : undefined;
+
+  return (
+    <img
+      src={imgSrc}
+      srcSet={srcSet}
+      sizes={srcSet ? sizes : undefined}
+      alt={alt}
+      loading={loading}
+      fetchPriority={fetchPriority}
+      decoding={decoding}
+      className={className}
+      onLoad={onLoad}
+    />
+  );
+}
+
 const locationGroups = [
   {
     title: 'Parks & Trails',
@@ -897,10 +1014,11 @@ function GalleryGrid({
             onClick={() => setActiveIndex(index)}
             aria-label={`Open photo: ${image.alt}`}
           >
-            <img
+            <ResponsiveImage
               src={image.src}
               alt={image.alt}
               loading="lazy"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             />
           </button>
@@ -923,9 +1041,12 @@ function GalleryGrid({
           >
             ‹
           </button>
-          <img
+          <ResponsiveImage
             src={activeImage.src}
             alt={activeImage.alt}
+            loading="eager"
+            sizes="90vw"
+            widths={[540, 768, 960, 1280, 1600, 1920]}
             className="max-h-[80vh] w-full max-w-4xl rounded-3xl object-cover shadow-2xl"
           />
           <button
@@ -976,7 +1097,7 @@ function GalleryCarousel({ images }: { images: MediaImage[] }) {
 
     setIsTransitioning(true);
     const preloader = new Image();
-    preloader.src = nextImage.src;
+    preloader.src = getOptimizedImageSrc(nextImage.src, 1280);
     preloader.onload = () => {
       setNextIndex(target);
       setShowNext(false);
@@ -1011,19 +1132,23 @@ function GalleryCarousel({ images }: { images: MediaImage[] }) {
   return (
     <div className="relative overflow-hidden rounded-3xl border border-sand-200/70 bg-sand-100/80 shadow-lg">
       <div className="relative h-80 sm:h-96 lg:h-[420px]">
-        <img
+        <ResponsiveImage
           src={active.src}
           alt={active.alt}
           loading="lazy"
+          sizes="(max-width: 1024px) 100vw, 1200px"
+          widths={[540, 768, 960, 1280, 1600]}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             next && showNext ? 'opacity-0' : 'opacity-100'
           }`}
         />
         {next && (
-          <img
+          <ResponsiveImage
             src={next.src}
             alt={next.alt}
             loading="lazy"
+            sizes="(max-width: 1024px) 100vw, 1200px"
+            widths={[540, 768, 960, 1280, 1600]}
             className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
               showNext ? 'opacity-100' : 'opacity-0'
             }`}
@@ -1080,22 +1205,75 @@ function MediaCarousel({
   images: MediaImage[];
   className?: string;
 }) {
+  const sequenceRef = useRef<number>(++nextMainImageSequence);
   const [index, setIndex] = useState(0);
+  const [isMainReady, setIsMainReady] = useState(() => isMainImageReady(sequenceRef.current));
+  const [hasMainLoaded, setHasMainLoaded] = useState(false);
+  const [hasQueuedPreload, setHasQueuedPreload] = useState(false);
   const hasMultiple = images.length > 1;
   const active = images[index] ?? images[0];
 
+  useEffect(() => {
+    setIndex(0);
+    setHasMainLoaded(false);
+    setHasQueuedPreload(false);
+  }, [images]);
+
+  useEffect(() => {
+    const mainImage = images[0];
+    if (!mainImage) return;
+    const sequence = sequenceRef.current;
+    if (isMainImageReady(sequence)) {
+      setIsMainReady(true);
+      return;
+    }
+
+    const unsubscribe = subscribeMainImageReady(sequence, () => setIsMainReady(true));
+    enqueueMainImage(sequence, mainImage.src);
+    return unsubscribe;
+  }, [images]);
+
+  useEffect(() => {
+    if (!isMainReady || !hasMainLoaded || hasQueuedPreload || images.length <= 1) return;
+
+    const timeout = window.setTimeout(() => {
+      images.slice(1).forEach((image) => {
+        const preload = new Image();
+        preload.decoding = 'async';
+        preload.src = getOptimizedImageSrc(image.src, 960);
+      });
+      setHasQueuedPreload(true);
+    }, 1200);
+
+    return () => window.clearTimeout(timeout);
+  }, [isMainReady, hasMainLoaded, hasQueuedPreload, images]);
+
   const showPrev = () => setIndex((prev) => (prev - 1 + images.length) % images.length);
   const showNext = () => setIndex((prev) => (prev + 1) % images.length);
+
+  if (!isMainReady || !active) {
+    return (
+      <div
+        className={`group relative overflow-hidden rounded-3xl bg-sand-100/80 ${className ?? ''}`}
+        aria-hidden="true"
+      />
+    );
+  }
 
   return (
     <div
       className={`group relative overflow-hidden rounded-3xl bg-sand-100/80 ${className ?? ''}`}
     >
-      <img
+      <ResponsiveImage
         src={active.src}
         alt={active.alt}
         loading="lazy"
+        sizes="(max-width: 1024px) 100vw, 600px"
+        widths={[360, 540, 768, 960, 1280]}
         className="h-full w-full object-cover"
+        onLoad={() => {
+          if (index === 0) setHasMainLoaded(true);
+        }}
       />
       {hasMultiple && (
         <>
@@ -1119,6 +1297,73 @@ function MediaCarousel({
             {index + 1}/{images.length}
           </div>
         </>
+      )}
+    </div>
+  );
+}
+
+function DeferredAutoplayVideo({
+  videoSrc,
+  posterSrc,
+  posterAlt,
+  className,
+  delayMs = 1200,
+}: {
+  videoSrc: string;
+  posterSrc: string;
+  posterAlt: string;
+  className?: string;
+  delayMs?: number;
+}) {
+  const [showVideo, setShowVideo] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const timeout = window.setTimeout(() => {
+      const activate = () => {
+        if (!cancelled) setShowVideo(true);
+      };
+
+      const win = window as Window & {
+        requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+      };
+      if (typeof win.requestIdleCallback === 'function') {
+        win.requestIdleCallback(activate, { timeout: 1500 });
+        return;
+      }
+      activate();
+    }, delayMs);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [delayMs, videoSrc]);
+
+  return (
+    <div className={className}>
+      <ResponsiveImage
+        src={posterSrc}
+        alt={posterAlt}
+        loading="lazy"
+        fetchPriority="low"
+        sizes="(max-width: 1024px) 100vw, 700px"
+        widths={[540, 768, 960, 1280]}
+        className="h-full w-full object-cover"
+      />
+      {showVideo && (
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="none"
+          poster={getOptimizedImageSrc(posterSrc, 960)}
+        >
+          <source src={videoSrc} type="video/mp4" />
+        </video>
       )}
     </div>
   );
@@ -1284,31 +1529,33 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
                 Indoor Swim Spa + rec room
               </div>
               <div className="overflow-hidden rounded-[28px] shadow-lift ring-1 ring-pine-900/10">
-                <video
+                <ResponsiveImage
+                  src="/images/great-room.jpg"
+                  alt="Great room overview"
+                  loading="eager"
+                  fetchPriority="high"
+                  sizes="(max-width: 1024px) 100vw, 45vw"
+                  widths={[540, 768, 960, 1280, 1600]}
                   className="h-full w-full object-cover"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  poster="/images/great-room.jpg"
-                >
-                  <source src="/living-room.mp4" type="video/mp4" />
-                </video>
+                />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="overflow-hidden rounded-3xl border border-sand-200/80 bg-sand-100/80 shadow-lg">
-                <img
+                <ResponsiveImage
                   src="/images/kitchen.jpg"
                   alt="Kitchen overview"
+                  sizes="(max-width: 1024px) 50vw, 22vw"
+                  widths={[360, 540, 768, 960]}
                   className="h-40 w-full object-cover"
                 />
               </div>
               <div className="overflow-hidden rounded-3xl border border-sand-200/80 bg-sand-100/80 shadow-lg">
-                <img
+                <ResponsiveImage
                   src="/images/play-area-5.jpg"
                   alt="Play area with games"
+                  sizes="(max-width: 1024px) 50vw, 22vw"
+                  widths={[360, 540, 768, 960]}
                   className="h-40 w-full object-cover"
                 />
               </div>
@@ -1558,17 +1805,12 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
           <div className="mt-12 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
             <Card className="overflow-hidden">
               <div className="relative h-full min-h-[260px]">
-                <video
-                  className="h-full w-full object-cover"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  poster="/images/play-area-5.jpg"
-                >
-                  <source src="/images/play-area.mp4" type="video/mp4" />
-                </video>
+                <DeferredAutoplayVideo
+                  videoSrc="/images/play-area.mp4"
+                  posterSrc="/images/play-area-5.jpg"
+                  posterAlt="Rec room play area"
+                  className="h-full w-full"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-pine-900/55 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 space-y-2 text-sand-50">
                   <p className="text-xs font-semibold uppercase tracking-[0.4em] text-sand-200">
@@ -1598,17 +1840,12 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
           <div className="mt-12 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
             <Card className="overflow-hidden">
               <div className="relative h-full min-h-[260px]">
-                <video
-                  className="h-full w-full object-cover"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  poster="/images/indoor-spa.jpg"
-                >
-                  <source src="/images/spa.mp4" type="video/mp4" />
-                </video>
+                <DeferredAutoplayVideo
+                  videoSrc="/images/spa.mp4"
+                  posterSrc="/images/indoor-spa.jpg"
+                  posterAlt="Indoor swim spa"
+                  className="h-full w-full"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-pine-900/50 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 space-y-2 text-sand-50">
                   <p className="text-xs font-semibold uppercase tracking-[0.4em] text-sand-200">
