@@ -33,7 +33,6 @@ import { Separator } from '@/components/ui/separator';
 type MediaImage = {
   src: string;
   alt: string;
-  fit?: 'cover' | 'contain';
 };
 
 const shuffleImages = <T,>(items: T[]) => {
@@ -313,7 +312,7 @@ const bathHighlights = [
     images: [
       { src: '/images/shower.jpg', alt: 'Large walk-in shower' },
       { src: '/images/jacuzzi.jpg', alt: 'Jacuzzi area' },
-      { src: '/images/jacuzzi-2.jpg', alt: 'Jacuzzi detail', fit: 'contain' },
+      { src: '/images/jacuzzi-2.jpg', alt: 'Jacuzzi detail' },
     ],
   },
   {
@@ -1099,7 +1098,7 @@ function MediaCarousel({
         src={active.src}
         alt={active.alt}
         loading="lazy"
-        className={`h-full w-full ${active.fit === 'contain' ? 'object-contain' : 'object-cover'}`}
+        className="h-full w-full object-cover"
       />
       {hasMultiple && (
         <>
