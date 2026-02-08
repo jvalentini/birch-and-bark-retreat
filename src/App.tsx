@@ -310,9 +310,7 @@ const bathHighlights = [
     title: 'Spa-grade main bath',
     description: 'Soaking tub + double rainfall shower heads for post-adventure resets.',
     images: [
-      { src: '/images/shower.jpg', alt: 'Large walk-in shower' },
       { src: '/images/jacuzzi.jpg', alt: 'Jacuzzi area' },
-      { src: '/images/jacuzzi-2.jpg', alt: 'Jacuzzi detail' },
     ],
   },
   {
@@ -362,18 +360,17 @@ const spaceShowcase = [
     title: 'Kitchen + dining',
     description: 'Fully stocked kitchen with space for shared meals.',
     images: [
-      { src: '/images/kitchen-sink.webp', alt: 'Kitchen sink and finishes' },
       { src: '/images/kitchen-zoom-out.jpg', alt: 'Kitchen wide angle' },
       { src: '/images/kitchen.jpg', alt: 'Kitchen overview' },
       { src: '/images/dining-table.jpg', alt: 'Dining table' },
     ],
   },
   {
-    title: 'Indoor Swim Spa + jacuzzi',
+    title: 'Indoor swim spa + jacuzzi',
     description: 'Warm soaks and year-round wellness in the Indoor Swim Spa.',
     images: [
-      { src: '/images/jacuzzi.jpg', alt: 'Jacuzzi area' },
       { src: '/images/jacuzzi-2.jpg', alt: 'Jacuzzi detail' },
+      { src: '/images/jacuzzi.jpg', alt: 'Jacuzzi area' },
       { src: '/images/indoor-spa.jpg', alt: 'Indoor Swim Spa and exercise pool' },
     ],
   },
