@@ -37,33 +37,14 @@ type MediaImage = {
 
 const responsiveImageWidths = [360, 540, 768, 960, 1280, 1600, 1920];
 const defaultImageQuality = 72;
-let nextMainImageSequence = 0;
-const readyMainImageSequences = new Set<number>();
-const mainImageSubscribers = new Map<number, Set<() => void>>();
-const mainImageQueue: { sequence: number; src: string }[] = [];
-let isMainImageQueueRunning = false;
-
-const isMainImageReady = (sequence: number) => readyMainImageSequences.has(sequence);
-
-const subscribeMainImageReady = (sequence: number, callback: () => void) => {
-  const listeners = mainImageSubscribers.get(sequence) ?? new Set<() => void>();
-  listeners.add(callback);
-  mainImageSubscribers.set(sequence, listeners);
-  return () => {
-    const current = mainImageSubscribers.get(sequence);
-    if (!current) return;
-    current.delete(callback);
-    if (current.size === 0) mainImageSubscribers.delete(sequence);
-  };
-};
-
-const markMainImageReady = (sequence: number) => {
-  readyMainImageSequences.add(sequence);
-  const listeners = mainImageSubscribers.get(sequence);
-  if (!listeners) return;
-  listeners.forEach((listener) => listener());
-  mainImageSubscribers.delete(sequence);
-};
+let nextAutoPrimarySequence = 4;
+const registeredPrimaryImages = new Map<number, string>();
+const readyPrimaryImages = new Set<number>();
+const loadingPrimaryImages = new Set<number>();
+const primaryImageSubscribers = new Map<number, Set<(ready: boolean) => void>>();
+const secondaryPreloadSubscribers = new Set<(enabled: boolean) => void>();
+let secondaryPreloadEnabled = false;
+let secondaryPreloadTimer: ReturnType<typeof setTimeout> | null = null;
 
 const shuffleImages = <T,>(items: T[]) => {
   const array = [...items];
@@ -578,45 +559,147 @@ const canUseCloudflareImageResizing = (src: string) => {
   return !window.location.hostname.endsWith('.pages.dev');
 };
 
+const isPagesDevHost = () =>
+  typeof window !== 'undefined' && window.location.hostname.endsWith('.pages.dev');
+
+const getLocalResponsiveImageSrc = (src: string, width: number) => {
+  if (!src.startsWith('/images/')) return src;
+  const match = src.match(/^\/images\/(.+)\.(jpg|jpeg|webp|png)$/i);
+  if (!match) return src;
+  const [, baseName, extension] = match;
+  return `/images/responsive/${baseName}-w${width}.${extension}`;
+};
+
 const getOptimizedImageSrc = (
   src: string,
   width: number,
   quality = defaultImageQuality
 ) => {
+  if (isPagesDevHost()) return getLocalResponsiveImageSrc(src, width);
   if (!canUseCloudflareImageResizing(src)) return src;
   return `/cdn-cgi/image/format=auto,quality=${quality},width=${width}${src}`;
 };
 
-const runMainImageQueue = () => {
-  if (isMainImageQueueRunning) return;
-  const next = mainImageQueue.shift();
-  if (!next) return;
-  if (isMainImageReady(next.sequence)) {
-    runMainImageQueue();
+const notifyPrimaryImageSubscribers = (sequence: number, ready: boolean) => {
+  const listeners = primaryImageSubscribers.get(sequence);
+  if (!listeners) return;
+  listeners.forEach((listener) => listener(ready));
+};
+
+const notifySecondaryPreloadSubscribers = (enabled: boolean) => {
+  secondaryPreloadSubscribers.forEach((listener) => listener(enabled));
+};
+
+const recomputeSecondaryPreloadGate = () => {
+  const allReady =
+    registeredPrimaryImages.size > 0 &&
+    Array.from(registeredPrimaryImages.keys()).every((sequence) =>
+      readyPrimaryImages.has(sequence)
+    );
+
+  if (!allReady) {
+    if (secondaryPreloadEnabled) {
+      secondaryPreloadEnabled = false;
+      notifySecondaryPreloadSubscribers(false);
+    }
+    if (secondaryPreloadTimer !== null) {
+      clearTimeout(secondaryPreloadTimer);
+      secondaryPreloadTimer = null;
+    }
     return;
   }
 
-  isMainImageQueueRunning = true;
+  if (secondaryPreloadEnabled) return;
+  if (secondaryPreloadTimer !== null) clearTimeout(secondaryPreloadTimer);
+
+  secondaryPreloadTimer = setTimeout(() => {
+    secondaryPreloadTimer = null;
+    const stillAllReady = Array.from(registeredPrimaryImages.keys()).every((sequence) =>
+      readyPrimaryImages.has(sequence)
+    );
+    if (!stillAllReady || secondaryPreloadEnabled) return;
+    secondaryPreloadEnabled = true;
+    notifySecondaryPreloadSubscribers(true);
+  }, 300);
+};
+
+const runPrimaryImageQueue = () => {
+  if (typeof window === 'undefined') return;
+  if (loadingPrimaryImages.size > 0) return;
+
+  const nextSequence = Array.from(registeredPrimaryImages.keys())
+    .filter((sequence) => !readyPrimaryImages.has(sequence))
+    .sort((a, b) => a - b)[0];
+
+  if (nextSequence === undefined) {
+    recomputeSecondaryPreloadGate();
+    return;
+  }
+
+  const src = registeredPrimaryImages.get(nextSequence);
+  if (!src) return;
+
+  loadingPrimaryImages.add(nextSequence);
   const preloader = new Image();
   preloader.decoding = 'async';
-  preloader.src = getOptimizedImageSrc(next.src, 960);
+  preloader.src = getOptimizedImageSrc(src, 960);
 
   const finalize = () => {
-    markMainImageReady(next.sequence);
-    isMainImageQueueRunning = false;
-    runMainImageQueue();
+    loadingPrimaryImages.delete(nextSequence);
+    readyPrimaryImages.add(nextSequence);
+    notifyPrimaryImageSubscribers(nextSequence, true);
+    recomputeSecondaryPreloadGate();
+    runPrimaryImageQueue();
   };
 
   preloader.onload = finalize;
   preloader.onerror = finalize;
 };
 
-const enqueueMainImage = (sequence: number, src: string) => {
-  if (isMainImageReady(sequence)) return;
-  if (!mainImageQueue.some((item) => item.sequence === sequence)) {
-    mainImageQueue.push({ sequence, src });
+const registerPrimaryImage = (sequence: number, src: string) => {
+  const previous = registeredPrimaryImages.get(sequence);
+  registeredPrimaryImages.set(sequence, src);
+  if (previous && previous !== src) {
+    readyPrimaryImages.delete(sequence);
+    notifyPrimaryImageSubscribers(sequence, false);
   }
-  runMainImageQueue();
+  recomputeSecondaryPreloadGate();
+  runPrimaryImageQueue();
+};
+
+const subscribePrimaryImage = (
+  sequence: number,
+  listener: (ready: boolean) => void
+) => {
+  const listeners = primaryImageSubscribers.get(sequence) ?? new Set<(ready: boolean) => void>();
+  listeners.add(listener);
+  primaryImageSubscribers.set(sequence, listeners);
+  listener(readyPrimaryImages.has(sequence));
+  return () => {
+    const current = primaryImageSubscribers.get(sequence);
+    if (!current) return;
+    current.delete(listener);
+    if (current.size === 0) primaryImageSubscribers.delete(sequence);
+  };
+};
+
+const subscribeSecondaryPreload = (listener: (enabled: boolean) => void) => {
+  secondaryPreloadSubscribers.add(listener);
+  listener(secondaryPreloadEnabled);
+  return () => secondaryPreloadSubscribers.delete(listener);
+};
+
+const usePrimaryImageSequence = (fixedSequence?: number) => {
+  const sequenceRef = useRef<number>(
+    fixedSequence ?? (nextAutoPrimarySequence += 1) - 1
+  );
+  return sequenceRef.current;
+};
+
+const useSecondaryPreloadGate = () => {
+  const [enabled, setEnabled] = useState(secondaryPreloadEnabled);
+  useEffect(() => subscribeSecondaryPreload(setEnabled), []);
+  return enabled;
 };
 
 function ResponsiveImage({
@@ -630,6 +713,7 @@ function ResponsiveImage({
   quality = defaultImageQuality,
   decoding = 'async',
   onLoad,
+  primarySequence,
 }: {
   src: string;
   alt: string;
@@ -641,12 +725,28 @@ function ResponsiveImage({
   quality?: number;
   decoding?: 'async' | 'sync' | 'auto';
   onLoad?: React.ReactEventHandler<HTMLImageElement>;
+  primarySequence?: number;
 }) {
+  const [isPrimaryReady, setIsPrimaryReady] = useState(
+    primarySequence === undefined || readyPrimaryImages.has(primarySequence)
+  );
+
+  useEffect(() => {
+    if (primarySequence === undefined) return;
+    registerPrimaryImage(primarySequence, src);
+    return subscribePrimaryImage(primarySequence, setIsPrimaryReady);
+  }, [primarySequence, src]);
+
+  if (!isPrimaryReady) {
+    return <div className={className} aria-hidden="true" />;
+  }
+
   const defaultWidth = widths[widths.length - 1] ?? 1280;
   const imgSrc = getOptimizedImageSrc(src, defaultWidth, quality);
-  const srcSet = canUseCloudflareImageResizing(src)
-    ? widths.map((width) => `${getOptimizedImageSrc(src, width, quality)} ${width}w`).join(', ')
-    : undefined;
+  const srcSet =
+    canUseCloudflareImageResizing(src) || isPagesDevHost()
+      ? widths.map((width) => `${getOptimizedImageSrc(src, width, quality)} ${width}w`).join(', ')
+      : undefined;
 
   return (
     <img
@@ -1205,9 +1305,11 @@ function MediaCarousel({
   images: MediaImage[];
   className?: string;
 }) {
-  const sequenceRef = useRef<number>(++nextMainImageSequence);
+  const primarySequence = usePrimaryImageSequence();
+  const secondaryPreloadAllowed = useSecondaryPreloadGate();
+  const containerRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
-  const [isMainReady, setIsMainReady] = useState(() => isMainImageReady(sequenceRef.current));
+  const [isNearViewport, setIsNearViewport] = useState(false);
   const [hasMainLoaded, setHasMainLoaded] = useState(false);
   const [hasQueuedPreload, setHasQueuedPreload] = useState(false);
   const hasMultiple = images.length > 1;
@@ -1220,21 +1322,25 @@ function MediaCarousel({
   }, [images]);
 
   useEffect(() => {
-    const mainImage = images[0];
-    if (!mainImage) return;
-    const sequence = sequenceRef.current;
-    if (isMainImageReady(sequence)) {
-      setIsMainReady(true);
-      return;
-    }
+    const element = containerRef.current;
+    if (!element || isNearViewport) return;
 
-    const unsubscribe = subscribeMainImageReady(sequence, () => setIsMainReady(true));
-    enqueueMainImage(sequence, mainImage.src);
-    return unsubscribe;
-  }, [images]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        setIsNearViewport(true);
+        observer.disconnect();
+      },
+      { rootMargin: '420px 0px' }
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [isNearViewport]);
 
   useEffect(() => {
-    if (!isMainReady || !hasMainLoaded || hasQueuedPreload || images.length <= 1) return;
+    if (!secondaryPreloadAllowed || !hasMainLoaded || hasQueuedPreload || images.length <= 1) {
+      return;
+    }
 
     const timeout = window.setTimeout(() => {
       images.slice(1).forEach((image) => {
@@ -1246,31 +1352,26 @@ function MediaCarousel({
     }, 1200);
 
     return () => window.clearTimeout(timeout);
-  }, [isMainReady, hasMainLoaded, hasQueuedPreload, images]);
+  }, [secondaryPreloadAllowed, hasMainLoaded, hasQueuedPreload, images]);
 
   const showPrev = () => setIndex((prev) => (prev - 1 + images.length) % images.length);
   const showNext = () => setIndex((prev) => (prev + 1) % images.length);
-
-  if (!isMainReady || !active) {
-    return (
-      <div
-        className={`group relative overflow-hidden rounded-3xl bg-sand-100/80 ${className ?? ''}`}
-        aria-hidden="true"
-      />
-    );
-  }
+  if (!active) return null;
 
   return (
     <div
+      ref={containerRef}
       className={`group relative overflow-hidden rounded-3xl bg-sand-100/80 ${className ?? ''}`}
     >
       <ResponsiveImage
         src={active.src}
         alt={active.alt}
-        loading="lazy"
+        loading={isNearViewport ? 'eager' : 'lazy'}
+        fetchPriority={isNearViewport ? 'high' : 'low'}
         sizes="(max-width: 1024px) 100vw, 600px"
         widths={[360, 540, 768, 960, 1280]}
         className="h-full w-full object-cover"
+        primarySequence={index === 0 ? primarySequence : undefined}
         onLoad={() => {
           if (index === 0) setHasMainLoaded(true);
         }}
@@ -1315,9 +1416,32 @@ function DeferredAutoplayVideo({
   className?: string;
   delayMs?: number;
 }) {
+  const primarySequence = usePrimaryImageSequence();
+  const secondaryPreloadAllowed = useSecondaryPreloadGate();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isNearViewport, setIsNearViewport] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const webmSrc = videoSrc.replace(/\.mp4$/i, '.webm');
 
   useEffect(() => {
+    const element = containerRef.current;
+    if (!element || isNearViewport) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        setIsNearViewport(true);
+        observer.disconnect();
+      },
+      { rootMargin: '420px 0px' }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [isNearViewport]);
+
+  useEffect(() => {
+    if (!secondaryPreloadAllowed || !isNearViewport) return;
     let cancelled = false;
 
     const timeout = window.setTimeout(() => {
@@ -1339,10 +1463,10 @@ function DeferredAutoplayVideo({
       cancelled = true;
       window.clearTimeout(timeout);
     };
-  }, [delayMs, videoSrc]);
+  }, [delayMs, videoSrc, secondaryPreloadAllowed, isNearViewport]);
 
   return (
-    <div className={className}>
+    <div ref={containerRef} className={className}>
       <ResponsiveImage
         src={posterSrc}
         alt={posterAlt}
@@ -1351,6 +1475,7 @@ function DeferredAutoplayVideo({
         sizes="(max-width: 1024px) 100vw, 700px"
         widths={[540, 768, 960, 1280]}
         className="h-full w-full object-cover"
+        primarySequence={primarySequence}
       />
       {showVideo && (
         <video
@@ -1362,6 +1487,7 @@ function DeferredAutoplayVideo({
           preload="none"
           poster={getOptimizedImageSrc(posterSrc, 960)}
         >
+          <source src={webmSrc} type="video/webm" />
           <source src={videoSrc} type="video/mp4" />
         </video>
       )}
@@ -1534,6 +1660,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
                   alt="Great room overview"
                   loading="eager"
                   fetchPriority="high"
+                  primarySequence={1}
                   sizes="(max-width: 1024px) 100vw, 45vw"
                   widths={[540, 768, 960, 1280, 1600]}
                   className="h-full w-full object-cover"
@@ -1545,6 +1672,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
                 <ResponsiveImage
                   src="/images/kitchen.jpg"
                   alt="Kitchen overview"
+                  primarySequence={2}
                   sizes="(max-width: 1024px) 50vw, 22vw"
                   widths={[360, 540, 768, 960]}
                   className="h-40 w-full object-cover"
@@ -1554,6 +1682,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
                 <ResponsiveImage
                   src="/images/play-area-5.jpg"
                   alt="Play area with games"
+                  primarySequence={3}
                   sizes="(max-width: 1024px) 50vw, 22vw"
                   widths={[360, 540, 768, 960]}
                   className="h-40 w-full object-cover"

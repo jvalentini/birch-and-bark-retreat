@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && bun run scripts/seo/inline-built-css.ts",
+    "build": "bun run scripts/seo/generate-responsive-images.ts && vite build && bun run scripts/seo/inline-built-css.ts",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "biome check . && oxlint .",
