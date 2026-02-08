@@ -6,11 +6,9 @@ import {
   IconBed,
   IconDeck,
   IconDining,
-  IconDryer,
   IconEV,
   IconFirePit,
   IconGarden,
-  IconHotTub,
   IconKitchen,
   IconMapPin,
   IconPet,
@@ -35,6 +33,7 @@ import { Separator } from '@/components/ui/separator';
 type MediaImage = {
   src: string;
   alt: string;
+  fit?: 'cover' | 'contain';
 };
 
 const shuffleImages = <T,>(items: T[]) => {
@@ -62,7 +61,7 @@ const stats = [
 
 const highlights = [
   {
-    title: 'Indoor hot tub + exercise pool',
+    title: 'Indoor Swim Spa',
     description: 'Swim year-round with a spa-style soak and a dedicated wellness zone.',
   },
   {
@@ -190,7 +189,7 @@ const galleryBase = [
   },
   {
     src: '/images/indoor-spa.jpg',
-    alt: 'Indoor spa and exercise pool',
+    alt: 'Indoor Swim Spa and exercise pool',
   },
   {
     src: '/images/jacuzzi.jpg',
@@ -269,11 +268,11 @@ const gallery = [
 ];
 
 const popularAmenities = [
-  { title: 'Indoor pool', icon: IconPool },
-  { title: 'Hot tub', icon: IconHotTub },
-  { title: 'Kitchen', icon: IconKitchen },
-  { title: 'Washer', icon: IconWasher },
-  { title: 'Dryer', icon: IconDryer },
+  { title: 'Indoor Swim Spa', icon: IconPool },
+  { title: 'Rec room', icon: IconPlay },
+  { title: 'Expansive balcony', icon: IconBalcony },
+  { title: 'Stocked kitchen', icon: IconKitchen },
+  { title: 'Washer/dryer', icon: IconWasher },
   { title: 'Pet-friendly', icon: IconPet },
   { title: 'Fire pit', icon: IconFirePit },
   { title: 'High-speed WiFi', icon: IconWifi },
@@ -312,15 +311,16 @@ const bathHighlights = [
     title: 'Spa-grade main bath',
     description: 'Soaking tub + double rainfall shower heads for post-adventure resets.',
     images: [
-      { src: '/images/bathroom.jpg', alt: 'Main bathroom with soaking tub' },
       { src: '/images/shower.jpg', alt: 'Large walk-in shower' },
+      { src: '/images/jacuzzi.jpg', alt: 'Jacuzzi area' },
+      { src: '/images/jacuzzi-2.jpg', alt: 'Jacuzzi detail', fit: 'contain' },
     ],
   },
   {
     title: 'Stocked + ready',
     description:
       'Shampoo, conditioner, towels, and all the little comforts ready on arrival.',
-    images: [{ src: '/images/second-bathroom.jpg', alt: 'Upstairs bathroom vanity' }],
+    images: [{ src: '/images/bathroom-stocked.jpg', alt: 'Stocked bathroom essentials' }],
   },
 ];
 
@@ -370,12 +370,12 @@ const spaceShowcase = [
     ],
   },
   {
-    title: 'Indoor spa + jacuzzi',
-    description: 'Warm soaks and year-round wellness in the indoor spa.',
+    title: 'Indoor Swim Spa + jacuzzi',
+    description: 'Warm soaks and year-round wellness in the Indoor Swim Spa.',
     images: [
       { src: '/images/jacuzzi.jpg', alt: 'Jacuzzi area' },
       { src: '/images/jacuzzi-2.jpg', alt: 'Jacuzzi detail' },
-      { src: '/images/indoor-spa.jpg', alt: 'Indoor spa and exercise pool' },
+      { src: '/images/indoor-spa.jpg', alt: 'Indoor Swim Spa and exercise pool' },
     ],
   },
   {
@@ -413,25 +413,29 @@ const policies = [
   'Check-in after 4:00 PM',
   'Check-out before 11:00 AM',
   'Minimum age to book: 25',
-  'Children allowed (ages 0–17)',
   'Pets allowed: dogs (limit 2 total)',
   'No parties or events',
   'Smoking is not permitted',
   'Quiet hours: 9pm–9am (decibel sensors on site)',
   'No trespassing on neighboring properties',
-  'No hidden fees (cleaning included)',
+  'No hidden fees',
 ];
 
 const seasonalExperiences = [
   {
-    title: 'Winter ski weekends',
+    title: 'Winter vacations with skiing minutes away',
     subtitle: 'Nubs Nob + Boyne Highlands are minutes away.',
-    bullets: ['Boot warmers ready', 'Hot tub recovery nights', 'Fireplace + cocoa bar'],
+    bullets: ['Nubs Nob 24min', 'Boyne Highlands 24min', 'Boyne Mountain 34min'],
   },
   {
     title: 'Summer lake days',
-    subtitle: 'Beaches, wineries, and sunsets on Lake Michigan.',
-    bullets: ['Beach day pack list', 'Evening fire pit hangs', 'Balcony coffee sunrise'],
+    subtitle: 'beaches, parks, and lake sunsets',
+    bullets: [
+      'Little Traverse Bay 15min',
+      'Burt Lake 15min',
+      'Pickerel Lake 8min',
+      'Crooked Lake 10min',
+    ],
   },
 ];
 
@@ -521,10 +525,10 @@ const cancellationPolicySummary = [
 ];
 
 const reviewHighlightBadges = [
-  'Family-ready',
+  'Family focused',
   'Dog-friendly',
   'EV charging',
-  'Indoor spa',
+  'Indoor Swim Spa',
   'Rec room',
 ];
 
@@ -1095,7 +1099,7 @@ function MediaCarousel({
         src={active.src}
         alt={active.alt}
         loading="lazy"
-        className="h-full w-full object-cover"
+        className={`h-full w-full ${active.fit === 'contain' ? 'object-contain' : 'object-cover'}`}
       />
       {hasMultiple && (
         <>
@@ -1142,7 +1146,7 @@ function StickyBookingBar({
               Ready to book?
             </p>
             <p className="text-sm text-pine-700">
-              Check dates instantly or call for a custom stay.
+              {reviewSummary.count} verified reviews · instant confirmation · flexible cancellation
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -1249,8 +1253,8 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
               </h1>
               <p className="text-lg text-pine-700">
                 Tucked into breathtaking woods, Birch & Bark Retreat is a 3,000 sq ft getaway
-                crafted for families and groups. Think fireside nights, a year-round indoor hot tub
-                pool, a cinematic rec room, and serene mornings just minutes from Lake Michigan.
+                crafted for families and groups. Think fireside nights, a year-round indoor swim
+                spa, a cinematic rec room, and serene mornings just minutes from Lake Michigan.
               </p>
             </div>
             <div className="flex flex-wrap gap-4">
@@ -1281,7 +1285,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
           <div className="space-y-6">
             <div className="relative">
               <div className="absolute -top-6 left-6 z-10 hidden rounded-2xl bg-sand-100/95 px-5 py-3 text-xs uppercase tracking-[0.3em] text-pine-700 shadow-lg md:block">
-                Indoor spa + rec room
+                Indoor Swim Spa + rec room
               </div>
               <div className="overflow-hidden rounded-[28px] shadow-lift ring-1 ring-pine-900/10">
                 <video
@@ -1315,7 +1319,40 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
             </div>
           </div>
         </div>
-        <div className="mx-auto mt-14 grid w-full max-w-6xl gap-4 px-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto mt-8 w-full max-w-6xl px-6 md:hidden">
+          <Card>
+            <CardContent className="space-y-3 p-4">
+              <div className="flex flex-wrap gap-2 text-xs text-pine-700">
+                <span className="rounded-full border border-sand-200/80 bg-sand-50 px-3 py-1 font-semibold uppercase tracking-[0.1em]">
+                  Sleeps 10
+                </span>
+                <span className="rounded-full border border-sand-200/80 bg-sand-50 px-3 py-1 font-semibold uppercase tracking-[0.1em]">
+                  3 + kids room
+                </span>
+                <span className="rounded-full border border-sand-200/80 bg-sand-50 px-3 py-1 font-semibold uppercase tracking-[0.1em]">
+                  2 full bathrooms
+                </span>
+                <span className="rounded-full border border-sand-200/80 bg-sand-50 px-3 py-1 font-semibold uppercase tracking-[0.1em]">
+                  11 private acres
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 text-sm text-pine-700">
+                <span className="text-base" aria-hidden="true">
+                  ★★★★★
+                </span>
+                <span className="font-semibold text-ember-600">{reviewSummary.highlight}</span>
+                <span>{reviewSummary.count} verified reviews</span>
+                <a
+                  href="#testimonials"
+                  className="ml-auto inline-flex items-center gap-1 font-semibold text-ember-600"
+                >
+                  Reviews <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="mx-auto mt-14 hidden w-full max-w-6xl gap-4 px-6 md:grid sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat) => (
             <Card key={stat.label}>
               <CardHeader>
@@ -1329,7 +1366,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
             </Card>
           ))}
         </div>
-        <div className="mx-auto mt-6 w-full max-w-6xl px-6">
+        <div className="mx-auto mt-6 hidden w-full max-w-6xl px-6 md:block">
           <Card>
             <CardContent className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:justify-between">
               <div className="space-y-2">
@@ -1337,7 +1374,9 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
                   Guests love it
                 </p>
                 <div className="flex flex-wrap items-center gap-3 text-pine-800">
-                  <span className="text-2xl">⭐️⭐️⭐️⭐️⭐️</span>
+                  <span className="text-2xl" aria-hidden="true">
+                    ★★★★★
+                  </span>
                   <span className="text-sm uppercase tracking-[0.3em] text-ember-600">
                     {reviewSummary.highlight}
                   </span>
@@ -1369,7 +1408,43 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
 
       <section id="amenities" className="pb-16">
         <div className="mx-auto w-full max-w-6xl px-6">
-          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="md:hidden">
+            <Card>
+              <CardContent className="pt-6">
+                <Accordion type="single" collapsible>
+                  <AccordionItem value="stay-highlights">
+                    <AccordionTrigger>Stay highlights</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-2 text-sm text-pine-700">
+                        {highlights.map((item) => (
+                          <p key={item.title}>
+                            <span className="font-semibold text-pine-900">{item.title}:</span>{' '}
+                            {item.description}
+                          </p>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="popular-amenities">
+                    <AccordionTrigger>Popular amenities</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="flex flex-wrap gap-2">
+                        {popularAmenities.map((amenity) => (
+                          <span
+                            key={amenity.title}
+                            className="rounded-full border border-sand-200/80 bg-sand-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.1em] text-pine-700"
+                          >
+                            {amenity.title}
+                          </span>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="hidden gap-10 md:grid lg:grid-cols-[0.9fr_1.1fr]">
             <div className="space-y-6">
               <Badge variant="forest">Stay highlights</Badge>
               <h2 className="text-3xl font-semibold sm:text-4xl">
@@ -1379,7 +1454,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
                 From sunrise coffees on the balcony to evenings in the rec room, the retreat is
                 curated for comfort and adventure. Bring your people, your pets, and your curiosity.
               </p>
-              <Button variant="outline" asChild>
+              <Button variant="outline" className="hidden md:inline-flex" asChild>
                 <a href="/photos">View full photo set</a>
               </Button>
             </div>
@@ -1394,7 +1469,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
               ))}
             </div>
           </div>
-          <div className="mt-10">
+          <div className="mt-10 hidden md:block">
             <p className="text-xs font-semibold uppercase tracking-[0.4em] text-pine-500">
               Popular amenities
             </p>
@@ -1543,7 +1618,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
                   <p className="text-xs font-semibold uppercase tracking-[0.4em] text-sand-200">
                     Wellness
                   </p>
-                  <p className="text-2xl font-semibold">Indoor spa + hot tub.</p>
+                  <p className="text-2xl font-semibold">Indoor Swim Spa.</p>
                 </div>
               </div>
             </Card>
@@ -1584,14 +1659,14 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
         </div>
       </section>
 
-      <section id="gallery" className="pb-16">
+      <section id="gallery" className="hidden pb-16 md:block">
         <div className="mx-auto w-full max-w-6xl px-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="space-y-3">
               <Badge variant="accent">Gallery</Badge>
               <h2 className="text-3xl font-semibold sm:text-4xl">A peek into the retreat.</h2>
             </div>
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" className="hidden md:inline-flex" asChild>
               <a href="/photos">Explore the full gallery</a>
             </Button>
           </div>
@@ -1611,7 +1686,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
                 Verified guest feedback from recent stays in 2025–2026.
               </p>
             </div>
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" className="hidden md:inline-flex" asChild>
               <a href="/reviews">View all reviews</a>
             </Button>
           </div>
@@ -1657,14 +1732,14 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
             <div className="space-y-6">
               <Badge>Location</Badge>
               <h2 className="text-3xl font-semibold sm:text-4xl">
-                Minutes from Petoskey, Harbor Springs, and Lake Michigan.
+                minutes away from all Northern MI has to offer
               </h2>
               <p className="text-lg text-pine-700">
                 You are close to beaches, golf courses, wineries, and ski resorts, yet tucked away
                 in a peaceful pocket of 11 private acres. The best of Northern Michigan is at your
                 doorstep.
               </p>
-              <Button variant="outline" asChild>
+              <Button variant="outline" className="hidden md:inline-flex" asChild>
                 <a href="/location">See full attractions list</a>
               </Button>
             </div>
@@ -1684,7 +1759,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
                 Tailored for ski weekends and lake days.
               </h2>
             </div>
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" className="hidden md:inline-flex" asChild>
               <a href="/book">Plan your stay</a>
             </Button>
           </div>
@@ -1719,7 +1794,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
                 We keep everything simple and transparent. If you need a custom stay or have
                 questions, reach out and we will respond quickly.
               </p>
-              <Button asChild>
+              <Button className="hidden md:inline-flex" asChild>
                 <a href="mailto:birchandbarkretreat@gmail.com">Email the host</a>
               </Button>
             </div>
@@ -1926,7 +2001,7 @@ function LocationPage() {
 
 function CallToAction() {
   return (
-    <section className="pb-20">
+    <section className="hidden pb-20 md:block">
       <div className="mx-auto w-full max-w-6xl px-6">
         <Card className="bg-pine-900 text-sand-50">
           <CardContent className="flex flex-col items-start gap-6 p-10 md:flex-row md:items-center md:justify-between">
