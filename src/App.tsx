@@ -46,15 +46,6 @@ const secondaryPreloadSubscribers = new Set<(enabled: boolean) => void>();
 let secondaryPreloadEnabled = false;
 let secondaryPreloadTimer: ReturnType<typeof setTimeout> | null = null;
 
-const shuffleImages = <T,>(items: T[]) => {
-  const array = [...items];
-  for (let index = array.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(Math.random() * (index + 1));
-    [array[index], array[swapIndex]] = [array[swapIndex], array[index]];
-  }
-  return array;
-};
-
 const navItems = [
   { label: 'Location', href: '/location' },
   { label: 'Photos', href: '/photos' },
@@ -72,7 +63,7 @@ const stats = [
 const highlights = [
   {
     title: 'Indoor Swim Spa',
-    description: 'Swim year-round with a spa-style soak and a dedicated wellness zone.',
+    description: 'Soak year round; fun for kids, relaxing for adults.',
   },
   {
     title: 'Rec room built for groups',
@@ -92,8 +83,8 @@ const sleepingArrangements = [
   {
     title: 'Bedroom 1',
     images: [
-      { src: '/images/first-bedroom.jpg', alt: 'First bedroom with king bed' },
-      { src: '/images/first-bedroom-2.jpg', alt: 'First bedroom alternate angle' },
+      { src: '/images/1st bedroom-1.jpg', alt: 'First bedroom with king bed' },
+      { src: '/images/1st bedroom-2.jpg', alt: 'First bedroom alternate angle' },
     ],
     bedCount: 1,
     details: ['1 king bed', 'Primary suite', 'Private TV', 'Large closet'],
@@ -101,9 +92,10 @@ const sleepingArrangements = [
   {
     title: 'Bedroom 2',
     images: [
-      { src: '/images/second-bedroom.jpg', alt: 'Second bedroom with multiple beds' },
-      { src: '/images/second-bedroom-2.jpg', alt: 'Second bedroom alternate angle' },
-      { src: '/images/second-bedroom-3.jpg', alt: 'Second bedroom detail' },
+      { src: '/images/2nd bedroom-1.jpg', alt: 'Second bedroom with multiple beds' },
+      { src: '/images/2nd bedroom-4.jpg', alt: 'Second bedroom alternate view' },
+      { src: '/images/2nd bedroom-2.jpg', alt: 'Second bedroom alternate angle' },
+      { src: '/images/2nd bedroom-3.jpg', alt: 'Second bedroom detail' },
     ],
     bedCount: 4,
     details: ['2 twin beds', '1 double bed', '1 queen bed', 'Great for kids or groups'],
@@ -111,9 +103,9 @@ const sleepingArrangements = [
   {
     title: 'Bedroom 3',
     images: [
-      { src: '/images/third-bedroom.jpg', alt: 'Third bedroom with double and queen bed' },
-      { src: '/images/third-bedroom-2.jpg', alt: 'Third bedroom alternate angle' },
-      { src: '/images/bunkie.jpg', alt: 'Bunkie house bedroom' },
+      { src: '/images/3rd bedroom-1.jpg', alt: 'Third bedroom with double and queen bed' },
+      { src: '/images/3rd bedroom-2.jpg', alt: 'Third bedroom alternate angle' },
+      { src: '/images/3rd bedroom-3.jpg', alt: 'Bunkie house bedroom' },
     ],
     bedCount: 2,
     details: ['1 double bed', '1 queen bed', 'Standalone bunkie house'],
@@ -122,156 +114,204 @@ const sleepingArrangements = [
 
 const galleryBase = [
   {
-    src: '/images/outside-house.jpg',
-    alt: 'Exterior view of the retreat surrounded by trees',
+    src: '/images/great room-1.jpg',
+    alt: 'Great room with cozy seating',
   },
   {
-    src: '/images/living-room.jpg',
-    alt: 'Living room with cozy seating',
+    src: '/images/great room-2.jpg',
+    alt: 'Great room seating area',
   },
   {
-    src: '/images/living-room-2.jpg',
-    alt: 'Living room seating area',
+    src: '/images/great room-3.jpg',
+    alt: 'Great room wide angle',
   },
   {
-    src: '/images/living-room-zoom-out.jpg',
-    alt: 'Wide view of the living room',
+    src: '/images/great room-4.jpg',
+    alt: 'Great room and open living area',
   },
   {
-    src: '/images/living-area-zoom-out.jpg',
-    alt: 'Open living area view',
+    src: '/images/great room-5.jpg',
+    alt: 'Great room overview',
   },
   {
-    src: '/images/great-room.jpg',
-    alt: 'Great room with wood finishes',
+    src: '/images/great room-6.jpg',
+    alt: 'Great room by the fireplace',
   },
   {
-    src: '/images/kitchen.jpg',
-    alt: 'Kitchen overview',
+    src: '/images/great room-7.jpg',
+    alt: 'Great room alternate perspective',
   },
   {
-    src: '/images/kitchen-zoom-out.jpg',
-    alt: 'Kitchen wide angle',
+    src: '/images/dining-1.jpg',
+    alt: 'Dining area view',
   },
   {
-    src: '/images/dining-table.jpg',
-    alt: 'Dining table setting',
+    src: '/images/dining-2.jpg',
+    alt: 'Dining table setup',
   },
   {
-    src: '/images/first-bedroom.jpg',
+    src: '/images/foyer.jpg',
+    alt: 'Foyer',
+  },
+  {
+    src: '/images/hallway.jpg',
+    alt: 'Hallway',
+  },
+  {
+    src: '/images/1st bedroom-1.jpg',
     alt: 'First bedroom with king bed',
   },
   {
-    src: '/images/first-bedroom-2.jpg',
+    src: '/images/1st bedroom-2.jpg',
     alt: 'First bedroom alternate angle',
   },
   {
-    src: '/images/second-bedroom.jpg',
+    src: '/images/2nd bedroom-1.jpg',
     alt: 'Second bedroom with multiple beds',
   },
   {
-    src: '/images/second-bedroom-2.jpg',
+    src: '/images/2nd bedroom-2.jpg',
     alt: 'Second bedroom alternate angle',
   },
   {
-    src: '/images/second-bedroom-3.jpg',
+    src: '/images/2nd bedroom-3.jpg',
     alt: 'Second bedroom detail',
   },
   {
-    src: '/images/third-bedroom.jpg',
+    src: '/images/2nd bedroom-4.jpg',
+    alt: 'Second bedroom alternate view',
+  },
+  {
+    src: '/images/3rd bedroom-1.jpg',
     alt: 'Third bedroom with double and queen bed',
   },
   {
-    src: '/images/bunkie.jpg',
+    src: '/images/3rd bedroom-2.jpg',
+    alt: 'Third bedroom alternate angle',
+  },
+  {
+    src: '/images/3rd bedroom-3.jpg',
     alt: 'Bunkie house bedroom',
   },
   {
-    src: '/images/bathroom.jpg',
-    alt: 'Bathroom with vanity and mirror',
+    src: '/images/downstairs bathroom-1.jpg',
+    alt: 'Downstairs bathroom',
   },
   {
-    src: '/images/shower.jpg',
-    alt: 'Walk-in shower',
+    src: '/images/downstairs bathroom-2.jpg',
+    alt: 'Downstairs shower',
   },
   {
-    src: '/images/indoor-spa.jpg',
-    alt: 'Indoor Swim Spa and exercise pool',
+    src: '/images/upstairs bathroom-1.jpg',
+    alt: 'Upstairs bathroom',
   },
   {
-    src: '/images/jacuzzi.jpg',
-    alt: 'Jacuzzi soaking area',
+    src: '/images/upstairs bathroom-2.jpg',
+    alt: 'Upstairs shower and bath detail',
   },
   {
-    src: '/images/jacuzzi-2.jpg',
-    alt: 'Jacuzzi and lounge detail',
+    src: '/images/upstairs bathroom-5.jpg',
+    alt: 'Luxurious main bath',
   },
   {
-    src: '/images/play-area.jpg',
-    alt: 'Indoor play area',
+    src: '/images/upstairs bathroom-7.jpg',
+    alt: 'Upstairs vanity and mirror',
   },
   {
-    src: '/images/play-area-2.jpg',
-    alt: 'Play area with activities',
+    src: '/images/shampoo conditioner.jpg',
+    alt: 'Stocked bathroom essentials',
   },
   {
-    src: '/images/play-area-3.jpg',
-    alt: 'Play area equipment',
+    src: '/images/kitchen-1.jpg',
+    alt: 'Kitchen overview',
   },
   {
-    src: '/images/play-area-4.jpg',
-    alt: 'Play area seating',
+    src: '/images/kitchen-2.jpg',
+    alt: 'Kitchen wide angle',
   },
   {
-    src: '/images/play-area-5.jpg',
-    alt: 'Play area with games',
+    src: '/images/swim spa-1.jpg',
+    alt: 'Indoor swim spa and exercise pool',
   },
   {
-    src: '/images/outdoor-deck.jpg',
-    alt: 'Outdoor deck and patio',
+    src: '/images/swim spa-2.jpg',
+    alt: 'Indoor swim spa lounge view',
   },
   {
-    src: '/images/covered-porch.jpg',
-    alt: 'Covered porch seating',
+    src: '/images/rec room-1.jpg',
+    alt: 'Rec room overview',
   },
   {
-    src: '/images/covered-porch-2.jpg',
-    alt: 'Covered porch view',
+    src: '/images/rec room-2.jpg',
+    alt: 'Rec room activity area',
   },
   {
-    src: '/images/ev-charging.webp',
-    alt: 'EV charging station',
+    src: '/images/rec room-3.jpg',
+    alt: 'Rec room equipment',
   },
   {
-    src: '/images/ev-charging-2.webp',
-    alt: 'EV charging setup',
+    src: '/images/rec room-4.jpg',
+    alt: 'Rec room seating',
   },
   {
-    src: '/images/laundry.jpg',
-    alt: 'Laundry area',
+    src: '/images/rec room-5.jpg',
+    alt: 'Rec room games',
   },
   {
-    src: '/images/second-bathroom.jpg',
-    alt: 'Second bathroom',
+    src: '/images/rec room-6.jpg',
+    alt: 'Rec room entertainment zone',
   },
   {
-    src: '/images/third-bedroom-2.jpg',
-    alt: 'Third bedroom alternate angle',
+    src: '/images/board games.jpg',
+    alt: 'Board games',
+  },
+  {
+    src: '/images/stair landing bear.jpg',
+    alt: 'Stair landing decor',
+  },
+  {
+    src: '/images/exterior firepit.jpg',
+    alt: 'Exterior firepit',
+  },
+  {
+    src: '/images/exterior balcony-1.jpg',
+    alt: 'Exterior balcony view',
+  },
+  {
+    src: '/images/exterior balcony-2.jpg',
+    alt: 'Exterior balcony and tree-lined views',
+  },
+  {
+    src: '/images/exterior covered porch.jpg',
+    alt: 'Exterior covered porch',
+  },
+  {
+    src: '/images/exterior hammock.jpg',
+    alt: 'Exterior hammock',
+  },
+  {
+    src: '/images/exterior ev charger-1.jpg',
+    alt: 'Exterior EV charger',
+  },
+  {
+    src: '/images/laundry room.jpg',
+    alt: 'Laundry room',
+  },
+  {
+    src: '/images/exterior house-1.jpg',
+    alt: 'Exterior house view',
+  },
+  {
+    src: '/images/exterior house-2.jpg',
+    alt: 'Exterior house in wooded setting',
+  },
+  {
+    src: '/images/exterior house-3.jpg',
+    alt: 'Exterior house and drive approach',
   },
 ];
 
-const galleryRepeatImages = new Set([
-  '/images/outdoor-deck.jpg',
-  '/images/covered-porch.jpg',
-  '/images/kitchen.jpg',
-  '/images/dining-table.jpg',
-  '/images/play-area.jpg',
-  '/images/outside-house.jpg',
-]);
-
-const gallery = [
-  ...galleryBase.filter((image) => !galleryRepeatImages.has(image.src)),
-  ...galleryBase.filter((image) => galleryRepeatImages.has(image.src)),
-];
+const gallery = galleryBase;
 
 const popularAmenities = [
   { title: 'Indoor Swim Spa', icon: IconPool },
@@ -290,8 +330,8 @@ const bathrooms = [
     title: 'Downstairs bathroom',
     icon: IconBath,
     images: [
-      { src: '/images/bathroom.jpg', alt: 'Downstairs bathroom' },
-      { src: '/images/shower.jpg', alt: 'Downstairs shower' },
+      { src: '/images/downstairs bathroom-1.jpg', alt: 'Downstairs bathroom' },
+      { src: '/images/downstairs bathroom-2.jpg', alt: 'Downstairs shower' },
     ],
     features: [
       { label: 'Toilet', icon: IconToilet },
@@ -302,7 +342,9 @@ const bathrooms = [
     title: 'Upstairs bathroom',
     icon: IconBath,
     images: [
-      { src: '/images/second-bathroom.jpg', alt: 'Upstairs bathroom' },
+      { src: '/images/upstairs bathroom-7.jpg', alt: 'Upstairs bathroom vanity' },
+      { src: '/images/upstairs bathroom-1.jpg', alt: 'Upstairs bathroom' },
+      { src: '/images/upstairs bathroom-2.jpg', alt: 'Upstairs bathroom shower' },
     ],
     features: [
       { label: 'Soaking tub', icon: IconBathtub },
@@ -314,17 +356,17 @@ const bathrooms = [
 
 const bathHighlights = [
   {
-    title: 'Spa-grade main bath',
+    title: 'Luxurious main bath',
     description: 'Soaking tub + double rainfall shower heads for post-adventure resets.',
     images: [
-      { src: '/images/jacuzzi.jpg', alt: 'Jacuzzi area' },
+      { src: '/images/upstairs bathroom-2.jpg', alt: 'Main bath soaking tub and shower' },
     ],
   },
   {
     title: 'Stocked + ready',
     description:
       'Shampoo, conditioner, towels, and all the little comforts ready on arrival.',
-    images: [{ src: '/images/bathroom-stocked.jpg', alt: 'Stocked bathroom essentials' }],
+    images: [{ src: '/images/shampoo conditioner.jpg', alt: 'Stocked bathroom essentials' }],
   },
 ];
 
@@ -356,58 +398,68 @@ const spaceShowcase = [
     title: 'Great room + living area',
     description: 'Wood-lined comfort with plenty of seating for families and friends.',
     images: [
-      { src: '/images/living-room.jpg', alt: 'Living room with cozy seating' },
-      { src: '/images/living-room-2.jpg', alt: 'Living room seating area' },
-      { src: '/images/living-room-zoom-out.jpg', alt: 'Living room wide angle' },
-      { src: '/images/living-area-zoom-out.jpg', alt: 'Open living area' },
-      { src: '/images/great-room.jpg', alt: 'Great room overview' },
+      { src: '/images/great room-6.jpg', alt: 'Great room with cozy seating' },
+      { src: '/images/great room-1.jpg', alt: 'Living room with cozy seating' },
+      { src: '/images/great room-2.jpg', alt: 'Living room seating area' },
+      { src: '/images/great room-3.jpg', alt: 'Living room wide angle' },
+      { src: '/images/great room-4.jpg', alt: 'Open living area' },
+      { src: '/images/great room-5.jpg', alt: 'Great room overview' },
+      { src: '/images/dining-1.jpg', alt: 'Dining area view' },
+      { src: '/images/dining-2.jpg', alt: 'Dining table setup' },
+      { src: '/images/great room-7.jpg', alt: 'Great room alternate perspective' },
+      { src: '/images/foyer.jpg', alt: 'Entry foyer area' },
+      { src: '/images/hallway.jpg', alt: 'Interior hallway and flow' },
     ],
   },
   {
-    title: 'Kitchen + dining',
+    title: 'Kitchen',
     description: 'Fully stocked kitchen with space for shared meals.',
     images: [
-      { src: '/images/kitchen-zoom-out.jpg', alt: 'Kitchen wide angle' },
-      { src: '/images/kitchen.jpg', alt: 'Kitchen overview' },
-      { src: '/images/dining-table.jpg', alt: 'Dining table' },
+      { src: '/images/kitchen-1.jpg', alt: 'Kitchen overview' },
+      { src: '/images/kitchen-2.jpg', alt: 'Kitchen wide angle' },
     ],
   },
   {
-    title: 'Indoor swim spa + jacuzzi',
-    description: 'Warm soaks and year-round wellness in the Indoor Swim Spa.',
+    title: 'Indoor swim spa',
+    description: 'Year-round wellness in the Indoor Swim Spa.',
     images: [
-      { src: '/images/jacuzzi-2.jpg', alt: 'Jacuzzi detail' },
-      { src: '/images/jacuzzi.jpg', alt: 'Jacuzzi area' },
-      { src: '/images/indoor-spa.jpg', alt: 'Indoor Swim Spa and exercise pool' },
+      { src: '/images/swim spa-2.jpg', alt: 'Indoor swim spa lounge view' },
+      { src: '/images/swim spa-1.jpg', alt: 'Indoor Swim Spa and exercise pool' },
     ],
   },
   {
     title: 'Play area + rec zone',
     description: 'Arcade, climbing, and fun for all ages.',
     images: [
-      { src: '/images/play-area-2.jpg', alt: 'Play area activities' },
-      { src: '/images/play-area-3.jpg', alt: 'Play area equipment' },
-      { src: '/images/play-area-4.jpg', alt: 'Play area seating' },
-      { src: '/images/play-area-5.jpg', alt: 'Play area with games' },
-      { src: '/images/play-area.jpg', alt: 'Indoor play area' },
+      { src: '/images/rec room-6.jpg', alt: 'Rec room entertainment zone' },
+      { src: '/images/rec room-2.jpg', alt: 'Play area activities' },
+      { src: '/images/rec room-3.jpg', alt: 'Play area equipment' },
+      { src: '/images/rec room-4.jpg', alt: 'Play area seating' },
+      { src: '/images/rec room-5.jpg', alt: 'Play area with games' },
+      { src: '/images/rec room-1.jpg', alt: 'Indoor play area' },
+      { src: '/images/board games.jpg', alt: 'Board games and family activities' },
+      { src: '/images/stair landing bear.jpg', alt: 'Playful decor near rec area' },
     ],
   },
   {
-    title: 'Outdoor deck + covered porch',
+    title: 'Firepit + balcony + covered porch',
     description: 'Fresh air lounging with forest views.',
     images: [
-      { src: '/images/covered-porch-2.jpg', alt: 'Covered porch view' },
-      { src: '/images/outdoor-deck.jpg', alt: 'Outdoor deck and patio' },
-      { src: '/images/covered-porch.jpg', alt: 'Covered porch seating' },
+      { src: '/images/exterior firepit.jpg', alt: 'Outdoor deck and patio' },
+      { src: '/images/exterior balcony-2.jpg', alt: 'Balcony and tree-lined views' },
+      { src: '/images/exterior balcony-1.jpg', alt: 'Covered porch view' },
+      { src: '/images/exterior covered porch.jpg', alt: 'Covered porch seating' },
+      { src: '/images/exterior hammock.jpg', alt: 'Outdoor hammock for relaxing' },
+      { src: '/images/exterior house-2.jpg', alt: 'Retreat exterior in wooded setting' },
     ],
   },
   {
     title: 'EV charging + laundry',
     description: 'Charge up and refresh with on-site laundry.',
     images: [
-      { src: '/images/ev-charging.webp', alt: 'EV charging station' },
-      { src: '/images/ev-charging-2.webp', alt: 'EV charging setup' },
-      { src: '/images/laundry.jpg', alt: 'Laundry area' },
+      { src: '/images/laundry room.jpg', alt: 'Laundry area' },
+      { src: '/images/exterior ev charger-1.jpg', alt: 'EV charging station' },
+      { src: '/images/exterior house-3.jpg', alt: 'Home exterior and drive approach' },
     ],
   },
 ];
@@ -518,7 +570,7 @@ const reviews = [
 
 const reviewSummary = {
   count: 27,
-  highlight: '10/10',
+  highlight: '5 out of 5',
 };
 
 const cancellationPolicySummary = [
@@ -561,6 +613,18 @@ const canUseCloudflareImageResizing = (src: string) => {
 
 const isPagesDevHost = () =>
   typeof window !== 'undefined' && window.location.hostname.endsWith('.pages.dev');
+
+const shouldReduceDataUsage = () => {
+  if (typeof navigator === 'undefined') return false;
+  const connection = (
+    navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
+    }
+  ).connection;
+  if (!connection) return false;
+  if (connection.saveData) return true;
+  return connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g';
+};
 
 const getLocalResponsiveImageSrc = (src: string, width: number) => {
   if (!src.startsWith('/images/')) return src;
@@ -686,7 +750,9 @@ const subscribePrimaryImage = (
 const subscribeSecondaryPreload = (listener: (enabled: boolean) => void) => {
   secondaryPreloadSubscribers.add(listener);
   listener(secondaryPreloadEnabled);
-  return () => secondaryPreloadSubscribers.delete(listener);
+  return () => {
+    secondaryPreloadSubscribers.delete(listener);
+  };
 };
 
 const usePrimaryImageSequence = (fixedSequence?: number) => {
@@ -930,8 +996,9 @@ function BookingPanel({ compact = false }: { compact?: boolean }) {
 
   const openDatePicker = (input: HTMLInputElement | null) => {
     if (!input) return;
-    if ('showPicker' in input) {
-      input.showPicker();
+    const pickerInput = input as HTMLInputElement & { showPicker?: () => void };
+    if (typeof pickerInput.showPicker === 'function') {
+      pickerInput.showPicker();
       return;
     }
     input.focus();
@@ -1163,15 +1230,16 @@ function GalleryGrid({
 }
 
 function GalleryCarousel({ images }: { images: MediaImage[] }) {
-  const [order, setOrder] = useState(() => shuffleImages(images));
+  const [order, setOrder] = useState(images);
   const [activeIndex, setActiveIndex] = useState(0);
   const [nextIndex, setNextIndex] = useState<number | null>(null);
   const [showNext, setShowNext] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const reduceDataUsage = shouldReduceDataUsage();
+  const [isPlaying, setIsPlaying] = useState(() => !reduceDataUsage);
 
   useEffect(() => {
-    setOrder(shuffleImages(images));
+    setOrder(images);
     setActiveIndex(0);
     setNextIndex(null);
     setShowNext(false);
@@ -1186,9 +1254,6 @@ function GalleryCarousel({ images }: { images: MediaImage[] }) {
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setActiveIndex(target);
-      if (direction === 1 && target === 0) {
-        setOrder(shuffleImages(images));
-      }
       return;
     }
 
@@ -1197,7 +1262,7 @@ function GalleryCarousel({ images }: { images: MediaImage[] }) {
 
     setIsTransitioning(true);
     const preloader = new Image();
-    preloader.src = getOptimizedImageSrc(nextImage.src, 1280);
+    preloader.src = getOptimizedImageSrc(nextImage.src, reduceDataUsage ? 960 : 1280);
     preloader.onload = () => {
       setNextIndex(target);
       setShowNext(false);
@@ -1207,22 +1272,23 @@ function GalleryCarousel({ images }: { images: MediaImage[] }) {
         setNextIndex(null);
         setShowNext(false);
         setIsTransitioning(false);
-        if (direction === 1 && target === 0) {
-          setOrder(shuffleImages(images));
-        }
       }, 700);
     };
   };
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || reduceDataUsage) return;
     const timeout = window.setTimeout(() => {
       if (!document.hidden) {
         advance(1);
       }
     }, 5200);
     return () => window.clearTimeout(timeout);
-  }, [activeIndex, isPlaying, order]);
+  }, [activeIndex, isPlaying, order, reduceDataUsage]);
+
+  useEffect(() => {
+    if (reduceDataUsage) setIsPlaying(false);
+  }, [reduceDataUsage]);
 
   const active = order[activeIndex];
   const next = nextIndex !== null ? order[nextIndex] : null;
@@ -1311,14 +1377,12 @@ function MediaCarousel({
   const [index, setIndex] = useState(0);
   const [isNearViewport, setIsNearViewport] = useState(false);
   const [hasMainLoaded, setHasMainLoaded] = useState(false);
-  const [hasQueuedPreload, setHasQueuedPreload] = useState(false);
   const hasMultiple = images.length > 1;
   const active = images[index] ?? images[0];
 
   useEffect(() => {
     setIndex(0);
     setHasMainLoaded(false);
-    setHasQueuedPreload(false);
   }, [images]);
 
   useEffect(() => {
@@ -1338,21 +1402,21 @@ function MediaCarousel({
   }, [isNearViewport]);
 
   useEffect(() => {
-    if (!secondaryPreloadAllowed || !hasMainLoaded || hasQueuedPreload || images.length <= 1) {
+    if (!secondaryPreloadAllowed || !hasMainLoaded || images.length <= 1 || shouldReduceDataUsage()) {
       return;
     }
 
+    const nextImage = images[(index + 1) % images.length];
+    if (!nextImage) return;
+
     const timeout = window.setTimeout(() => {
-      images.slice(1).forEach((image) => {
-        const preload = new Image();
-        preload.decoding = 'async';
-        preload.src = getOptimizedImageSrc(image.src, 960);
-      });
-      setHasQueuedPreload(true);
+      const preload = new Image();
+      preload.decoding = 'async';
+      preload.src = getOptimizedImageSrc(nextImage.src, 960);
     }, 1200);
 
     return () => window.clearTimeout(timeout);
-  }, [secondaryPreloadAllowed, hasMainLoaded, hasQueuedPreload, images]);
+  }, [secondaryPreloadAllowed, hasMainLoaded, images, index]);
 
   const showPrev = () => setIndex((prev) => (prev - 1 + images.length) % images.length);
   const showNext = () => setIndex((prev) => (prev + 1) % images.length);
@@ -1616,11 +1680,11 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
               <h1 className="text-4xl font-semibold leading-tight text-shadow-soft sm:text-5xl lg:text-6xl">
                 <span className="block">Woodland Luxury.</span>
                 <span className="block">Indoor Spa.</span>
-                <span className="block">Room for Everyone.</span>
+                <span className="block">Family Fun.</span>
               </h1>
               <p className="text-lg text-pine-700">
                 Tucked into breathtaking woods, Birch & Bark Retreat is a 3,000 sq ft getaway
-                crafted for families and groups. Think fireside nights, a year-round indoor swim
+                crafted for adults and kids alike. Think fireside nights, a year-round indoor swim
                 spa, a cinematic rec room, and serene mornings just minutes from Lake Michigan.
               </p>
             </div>
@@ -1656,7 +1720,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
               </div>
               <div className="overflow-hidden rounded-[28px] shadow-lift ring-1 ring-pine-900/10">
                 <ResponsiveImage
-                  src="/images/great-room.jpg"
+                  src="/images/great room-1.jpg"
                   alt="Great room overview"
                   loading="eager"
                   fetchPriority="high"
@@ -1670,8 +1734,8 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
             <div className="grid grid-cols-2 gap-4">
               <div className="overflow-hidden rounded-3xl border border-sand-200/80 bg-sand-100/80 shadow-lg">
                 <ResponsiveImage
-                  src="/images/kitchen.jpg"
-                  alt="Kitchen overview"
+                  src="/images/swim spa-1.jpg"
+                  alt="Indoor swim spa"
                   primarySequence={2}
                   sizes="(max-width: 1024px) 50vw, 22vw"
                   widths={[360, 540, 768, 960]}
@@ -1680,7 +1744,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
               </div>
               <div className="overflow-hidden rounded-3xl border border-sand-200/80 bg-sand-100/80 shadow-lg">
                 <ResponsiveImage
-                  src="/images/play-area-5.jpg"
+                  src="/images/rec room-5.jpg"
                   alt="Play area with games"
                   primarySequence={3}
                   sizes="(max-width: 1024px) 50vw, 22vw"
@@ -1728,12 +1792,12 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
           {stats.map((stat) => (
             <Card key={stat.label}>
               <CardHeader>
-                <CardTitle className="font-display text-3xl font-semibold leading-tight text-pine-900 sm:text-4xl">
-                  {stat.value}
-                </CardTitle>
                 <CardDescription className="text-sm font-semibold uppercase tracking-[0.18em] text-pine-600">
                   {stat.label}
                 </CardDescription>
+                <CardTitle className="font-display text-3xl font-semibold leading-tight text-pine-900 sm:text-4xl">
+                  {stat.value}
+                </CardTitle>
               </CardHeader>
             </Card>
           ))}
@@ -1936,7 +2000,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
               <div className="relative h-full min-h-[260px]">
                 <DeferredAutoplayVideo
                   videoSrc="/images/play-area.mp4"
-                  posterSrc="/images/play-area-5.jpg"
+                  posterSrc="/images/rec room-5.jpg"
                   posterAlt="Rec room play area"
                   className="h-full w-full"
                 />
@@ -1971,7 +2035,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
               <div className="relative h-full min-h-[260px]">
                 <DeferredAutoplayVideo
                   videoSrc="/images/spa.mp4"
-                  posterSrc="/images/indoor-spa.jpg"
+                  posterSrc="/images/swim spa-1.jpg"
                   posterAlt="Indoor swim spa"
                   className="h-full w-full"
                 />
@@ -2094,7 +2158,7 @@ function HomePage({ onOpenBooking }: { onOpenBooking: (source: string) => void }
             <div className="space-y-6">
               <Badge>Location</Badge>
               <h2 className="text-3xl font-semibold sm:text-4xl">
-                minutes away from all Northern MI has to offer
+                Minutes away from all Northern MI has to offer
               </h2>
               <p className="text-lg text-pine-700">
                 You are close to beaches, golf courses, wineries, and ski resorts, yet tucked away
